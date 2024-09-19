@@ -1,0 +1,11 @@
+/coverage
+
+/node_modules
+
+.DS_Store
+
+/logs
+
+.env
+
+/mongo
