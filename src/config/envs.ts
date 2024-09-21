@@ -3,6 +3,7 @@ import * as env from 'env-var';
 
 export const envs = {
   PORT: env.get('PORT').required().asPortNumber(),
+  API_PREFIX: env.get('API_PREFIX').required().asString(),
 
   //Mongo
   MONGO_DB_URL: env.get('MONGO_DB_URL').required().asString(),

@@ -1,6 +1,7 @@
 ### TODOS
--  Hash password
+-  Hash password :done
 -  Add Express validators :done
+-  MongoDDBB  :done
 -  JWT
--  MongoDDBB
+-  compare hash
 -  endpoints
