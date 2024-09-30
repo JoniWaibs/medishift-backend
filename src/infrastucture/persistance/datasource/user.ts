@@ -9,7 +9,7 @@ export class MongoDBDatasource implements UserDatasource {
       const userCreated = await User.create(user.data);
 
       return userCreated.id as string;
-    } catch (error) {
+    } catch (error: unknown) {
       throw AppError.internalServer(`User was not created in MongoDDBB - ${error}`);
     }
   }
