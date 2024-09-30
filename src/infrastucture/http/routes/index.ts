@@ -3,7 +3,7 @@ import { MongoDBDatasource } from '../../persistance/datasource/user';
 import { UserRepositoryImplementation } from '../../persistance/implementation/user';
 import { signUp } from '../../../shared/utils/schemma-validator';
 import { validate } from '../middlewares/validator';
-import {  AuthController } from '../controllers/auth';
+import { AuthController } from '../controllers/auth';
 import { currentUserMiddleware } from '../middlewares/current-user';
 
 export class AppRoutes {

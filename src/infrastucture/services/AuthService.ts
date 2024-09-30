@@ -1,8 +1,8 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { envs } from "../../config/envs";
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { envs } from '../../config/envs';
 
 export class AuthService {
-  public static generateToken({id, email}: {id: string, email: string} ): string {
+  public static generateToken({ id, email }: { id: string; email: string }): string {
     return jwt.sign({ id, email }, envs.JWT_SECRET_KEY, { expiresIn: envs.JWT_EXPIRES_IN });
   }
 

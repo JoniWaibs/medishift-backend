@@ -13,9 +13,9 @@ export class AuthController {
 
   public async signUp(req: Request, res: Response, next: NextFunction) {
     const { name, lastName, id, password, licenseNumber, contactInfo } = req.body;
-    
-    const userExists = await User.findOne({'contactInfo.email': contactInfo.email});
-    
+
+    const userExists = await User.findOne({ 'contactInfo.email': contactInfo.email });
+
     if (userExists) {
       throw AppError.conflict('User already exists');
     }
@@ -32,23 +32,21 @@ export class AuthController {
         password
       });
 
-      const token = AuthService.generateToken({ id: userId, email: contactInfo.email })
+      const token = AuthService.generateToken({ id: userId, email: contactInfo.email });
 
       res.cookie('session', token, cookieOptions).status(HttpCode.OK).json({
         id: userId,
         message: `User was created successfully`
       });
-      
-    } catch (error) {      
+    } catch (error) {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }
 
-
-  signIn(){}
+  signIn() {}
 
   currentUser(req: Request, res: Response) {
-    res.status(200).json({ user: req.user});
+    res.status(200).json({ user: req.user });
   }
 
   signOut(req: Request, res: Response) {

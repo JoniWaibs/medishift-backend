@@ -1,10 +1,10 @@
 import { type Server as ServerHttp, type IncomingMessage, type ServerResponse } from 'http';
 import express, { NextFunction, Request, Response, Router } from 'express';
-import cookieParser from "cookie-parser";
+import cookieParser from 'cookie-parser';
 import { HttpCode } from '../../core/enums';
 import { AppError } from '../../shared/errors/custom.error';
 import { ErrorMiddleware } from './middlewares/error';
-import "express-async-errors";
+import 'express-async-errors';
 
 interface ServerOptions {
   port: number;

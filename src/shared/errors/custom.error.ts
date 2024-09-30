@@ -30,7 +30,6 @@ export class AppError extends Error {
     Error.captureStackTrace(this);
   }
 
-
   static conflict(message: string, validationErrors?: ValidationType[]): AppError {
     return new AppError({ name: 'ConflictError', message, status: HttpCode.BAD_REQUEST, validationErrors });
   }
