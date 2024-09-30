@@ -3,7 +3,8 @@ import { MongoDBDatasource } from '../../persistance/datasource/user';
 import { UserRepositoryImplementation } from '../../persistance/implementation/user';
 import { signUp } from '../../../shared/utils/schemma-validator';
 import { validate } from '../middlewares/validator';
-import { UserController } from '../controllers/users/index.ts';
+import {  AuthController } from '../controllers/auth';
+import { currentUserMiddleware } from '../middlewares/current-user';
 
 export class AppRoutes {
   static get routes(): Router {
@@ -11,9 +12,10 @@ export class AppRoutes {
 
     const mongoDataSource = new MongoDBDatasource();
     const userImplementation = new UserRepositoryImplementation(mongoDataSource);
-    const userController = new UserController(userImplementation);
+    const authController = new AuthController(userImplementation);
 
-    router.post('/users/sign-up', validate(signUp), (req, res, next) => userController.signUp(req, res, next));
+    router.post('/auth/sign-up', validate(signUp), (req, res, next) => authController.signUp(req, res, next));
+    router.get('/auth/current-user', currentUserMiddleware, (req, res) => authController.currentUser(req, res));
 
     // rest of routes
     // ...

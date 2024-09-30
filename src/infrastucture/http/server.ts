@@ -1,8 +1,10 @@
-import express, { NextFunction, Request, Response, Router } from 'express';
 import { type Server as ServerHttp, type IncomingMessage, type ServerResponse } from 'http';
+import express, { NextFunction, Request, Response, Router } from 'express';
+import cookieParser from "cookie-parser";
 import { HttpCode } from '../../core/enums';
 import { AppError } from '../../shared/errors/custom.error';
 import { ErrorMiddleware } from './middlewares/error';
+import "express-async-errors";
 
 interface ServerOptions {
   port: number;
@@ -25,13 +27,16 @@ export class Server {
   }
 
   async run(): Promise<void> {
-    //* Middlewares
+    // Middlewares
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
 
+    // Cookie session configs
+    this.app.set('trust proxy', true);
+    this.app.use(cookieParser());
+
     // CORS
     this.app.use((req, res, next) => {
-      // Add your origins
       const allowedOrigins = ['http://localhost:3000'];
       const origin = req.headers.origin;
       if (allowedOrigins.includes(origin!)) {
@@ -42,7 +47,7 @@ export class Server {
       next();
     });
 
-    //* Routes
+    // Routes
     this.app.use(this.#apiPrefix, this.#routes);
 
     this.app.get('/', (_req: Request, res: Response) => {
@@ -51,7 +56,7 @@ export class Server {
       });
     });
 
-    //* Handle not found routes in /api/v1/*
+    // Handle not found routes in /api/v1/
     this.#routes.all('*', (req: Request, _: Response, next: NextFunction): void => {
       next(AppError.notFound(`Cant find ${req.originalUrl} on this server!`));
     });

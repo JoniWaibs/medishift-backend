@@ -43,6 +43,6 @@ export interface Doctor extends User {
   password: string;
   specialization?: string[];
   licenseNumber?: string;
-  shiftHistory?: ShiftHistory[];
+  shifts?: ShiftHistory[];
   clinics?: Clinic[];
 }

@@ -7,7 +7,7 @@
   ],
   "include": [
     "src/**/*.ts",
-    "typings"
+    "src/typings"
   ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
