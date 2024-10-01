@@ -3,8 +3,8 @@ import { HttpCode } from '../../../core/enums';
 import { AppError } from '../../../shared/errors/custom.error';
 
 export class ErrorMiddleware {
-  public static handleError = (error: unknown, _: Request, res: Response, next: NextFunction): void => {
-    console.warn('Error middleware was called');
+  static handleError = (error: unknown, _: Request, res: Response, next: NextFunction): void => {
+    console.warn('ErrorMiddleware was called');
 
     if (error instanceof AppError) {
       const { message, name, stack, validationErrors } = error;
