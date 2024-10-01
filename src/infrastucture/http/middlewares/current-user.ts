@@ -13,19 +13,21 @@ declare module 'express-serve-static-core' {
   }
 }
 
-export const currentUserMiddleware = (req: Request, _res: Response, next: NextFunction) => {
-  if (!req.cookies.session) {
-    throw AppError.unauthorized('Can not verify token in session');
-  }
+export class CurrentUserMiddleware {
+  static handleUser = (req: Request, res: Response, next: NextFunction): void => {
+    if (!req.cookies.session) {
+      throw AppError.unauthorized('Access denied, session expired');
+    }
 
-  try {
-    const payload = AuthService.verifyToken(req.cookies.session) as UserBasicInfo;
+    try {
+      const payload = AuthService.verifyToken(req.cookies.session) as UserBasicInfo;
 
-    req.user = payload;
+      req.user = payload;
 
-    console.log(`Current userId is: ${payload.id}`);
-    next();
-  } catch (error) {
-    next(AppError.unauthorized(`Something was wrong - ${error}`));
-  }
-};
+      console.log(`currentUserMiddleware is called: userId is: ${payload.id}`);
+      next();
+    } catch (error) {
+      next(AppError.unauthorized(`Invalid token - ${error}`));
+    }
+  };
+}

@@ -1,13 +1,13 @@
 import { UserRepository } from '../repository';
 
 export interface FindUserUseCase<T> {
-  execute: (userId: string) => Promise<T>;
+  execute: ({ id, email }: { id?: string; email?: string }) => Promise<T | null>;
 }
 
 export class FindUser<T> implements FindUserUseCase<T> {
   constructor(private readonly repository: UserRepository) {}
 
-  async execute(userId: string): Promise<T> {
-    return await this.repository.find(userId);
+  async execute({ id, email }: { id?: string; email?: string }): Promise<T | null> {
+    return await this.repository.find({ id, email });
   }
 }

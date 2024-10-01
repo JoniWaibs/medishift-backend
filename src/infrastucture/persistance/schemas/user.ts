@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema<Omit<Doctor, 'id'>>(
       type: String,
       required: true
     },
+    password: {
+      type: String,
+      trim: true
+    },
     lastName: {
       type: String,
       required: true

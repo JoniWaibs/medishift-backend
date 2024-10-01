@@ -1,12 +1,13 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import { UserRepository } from '../../../../application/repository';
-import { CreateUser } from '../../../../application/use-cases/create-user';
+import { CreateUser, FindUser } from '../../../../application/use-cases';
 import { Doctor } from '../../../../core/models';
 import { HttpCode, UserRole } from '../../../../core/enums';
 import { AppError } from '../../../../shared/errors/custom.error';
 import { User } from '../../../persistance/schemas/user';
 import { AuthService } from '../../../services/AuthService';
 import { cookieOptions } from '../../../../config/cookie';
+import { Password } from '../../../../shared/utils/password-hasher';
 
 export class AuthController {
   constructor(private readonly repository: UserRepository) {}
@@ -17,7 +18,7 @@ export class AuthController {
     const userExists = await User.findOne({ 'contactInfo.email': contactInfo.email });
 
     if (userExists) {
-      throw AppError.conflict('User already exists');
+      throw AppError.conflict('User already exists, you must login with your credentials');
     }
 
     try {
@@ -43,13 +44,31 @@ export class AuthController {
     }
   }
 
-  signIn() {}
+  async signIn(req: Request, res: Response) {
+    const { password, email } = req.body;
+
+    const user = await new FindUser<Doctor>(this.repository).execute({ email });
+
+    if (!user) {
+      throw AppError.unauthorized('User not found, you can create a free account');
+    }
+
+    const isMatch = await Password.compare(user.password, password);
+
+    if (!isMatch) {
+      throw AppError.unauthorized('Password does not match');
+    }
+
+    const token = AuthService.generateToken({ id: user.id!, email: user.contactInfo.email });
+
+    res.cookie('session', token, cookieOptions).status(HttpCode.OK).json(user);
+  }
 
   currentUser(req: Request, res: Response) {
     res.status(200).json({ user: req.user });
   }
 
-  signOut(req: Request, res: Response) {
+  signOut(_req: Request, res: Response) {
     res.clearCookie('session').json({});
   }
 }
