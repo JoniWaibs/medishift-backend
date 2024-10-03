@@ -4,7 +4,6 @@ import { CreateUser, FindUser } from '../../../../application/use-cases';
 import { Doctor } from '../../../../core/models';
 import { HttpCode, UserRole } from '../../../../core/enums';
 import { AppError } from '../../../../shared/errors/custom.error';
-import { User } from '../../../persistance/schemas/user';
 import { AuthService } from '../../../services/AuthService';
 import { cookieOptions } from '../../../../config/cookie';
 import { Password } from '../../../../shared/utils/password-hasher';
@@ -13,30 +12,29 @@ export class AuthController {
   constructor(private readonly repository: UserRepository) {}
 
   public async signUp(req: Request, res: Response, next: NextFunction) {
-    const { name, lastName, id, password, licenseNumber, contactInfo } = req.body;
+    const { name, lastName, password, licenseNumber, contactInfo } = req.body;
 
-    const userExists = await User.findOne({ 'contactInfo.email': contactInfo.email });
-
+    const userExists = await new FindUser(this.repository).executeByDoctor<Doctor>({ email: contactInfo.email });
+    
     if (userExists) {
       throw AppError.conflict('User already exists, you must login with your credentials');
     }
 
     try {
-      const userId = await new CreateUser<Doctor>(this.repository).execute({
-        id,
+      const user = await new CreateUser(this.repository).executeByDoctor<Doctor>({
         name,
         lastName,
-        createdAt: new Date(),
         role: UserRole.DOCTOR,
+        createdAt: new Date(),
         contactInfo,
         licenseNumber,
         password
       });
 
-      const token = AuthService.generateToken({ id: userId, email: contactInfo.email });
+      const token = AuthService.generateToken({ id: user.id, email: user.email, role: user.role });
 
       res.cookie('session', token, cookieOptions).status(HttpCode.OK).json({
-        id: userId,
+        id: user.id,
         message: `User was created successfully`
       });
     } catch (error) {
@@ -47,7 +45,7 @@ export class AuthController {
   async signIn(req: Request, res: Response) {
     const { password, email } = req.body;
 
-    const user = await new FindUser<Doctor>(this.repository).execute({ email });
+    const user = await new FindUser(this.repository).executeByDoctor<Doctor>({ email });
 
     if (!user) {
       throw AppError.unauthorized('User not found, you can create a free account');
@@ -59,7 +57,7 @@ export class AuthController {
       throw AppError.unauthorized('Password does not match');
     }
 
-    const token = AuthService.generateToken({ id: user.id!, email: user.contactInfo.email });
+    const token = AuthService.generateToken({ id: user.id!, email: user.contactInfo.email, role: user.role });
 
     res.cookie('session', token, cookieOptions).status(HttpCode.OK).json(user);
   }

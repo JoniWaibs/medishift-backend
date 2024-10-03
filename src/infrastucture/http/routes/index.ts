@@ -5,6 +5,8 @@ import { Validator } from '../../../shared/utils/schemma-validator';
 import { validate } from '../middlewares/validator';
 import { AuthController } from '../controllers/auth';
 import { CurrentUserMiddleware } from '../middlewares/current-user';
+import { RequestAuthMiddleware } from '../middlewares/request-auth';
+import { PatientController } from '../controllers/user';
 
 export class AppRoutes {
   static get routes(): Router {
@@ -13,6 +15,7 @@ export class AppRoutes {
     const mongoDataSource = new MongoDBDatasource();
     const userImplementation = new UserRepositoryImplementation(mongoDataSource);
     const authController = new AuthController(userImplementation);
+    const patientController = new PatientController(userImplementation);
 
     // Auth routes
     router.post('/auth/sign-up', validate(Validator.signUp), (req, res, next) => authController.signUp(req, res, next));
@@ -21,12 +24,23 @@ export class AppRoutes {
     );
     router.get('/auth/sign-in', validate(Validator.signIn), (req, res) => authController.signIn(req, res));
     router.post('/auth/sign-out', (req, res) => authController.signOut(req, res));
-
+    
     // User routes
-    router.post('/user/create');
-    router.delete('/user/delete');
-    router.put('/user/update');
-    router.get('/user/profile');
+    router.post(
+      '/user/patient/create',
+      CurrentUserMiddleware.handleUser,
+      RequestAuthMiddleware.handleByRole,
+      (req, res, next) => patientController.create(req, res, next)
+    );
+    router.get('/user/patient/profile/:id',       
+      CurrentUserMiddleware.handleUser,
+      RequestAuthMiddleware.handleByRole,
+      (req, res, next) => patientController.getById(req, res, next)
+    );
+    
+    router.get('/user/patient/all');
+    router.delete('/user/patient/delete');
+    router.put('/user/patient/update');
     // rest of routes
     // ...
 

@@ -11,9 +11,7 @@ export enum HttpCode {
 export enum UserRole {
   PATIENT = 'patient',
   DOCTOR = 'doctor',
-  NURSE = 'nurse',
-  ADMIN = 'admin',
-  COORDINATOR = 'coordinator'
+  ADMIN = 'admin'
 }
 
 export enum ShiftStatus {

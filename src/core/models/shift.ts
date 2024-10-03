@@ -1,4 +1,5 @@
 import { paymentStatus, ShiftStatus } from '../enums';
+import { Clinic } from './clinic';
 
 export interface ShiftHistory {
   shiftId: string;
@@ -6,14 +7,5 @@ export interface ShiftHistory {
   doctorId: string;
   status: ShiftStatus;
   paymentStatus: paymentStatus;
-  clinicData: {
-    clinicName: string;
-    clinicAddress: {
-      street: string;
-      city: string;
-      state: string;
-      zip: string;
-      country: string;
-    };
-  };
+  clinicData?: Clinic;
 }
