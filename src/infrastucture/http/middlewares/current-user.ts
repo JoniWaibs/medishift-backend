@@ -1,11 +1,7 @@
 import { type Response, type NextFunction, type Request } from 'express';
 import { AuthService } from '../../services/AuthService';
 import { AppError } from '../../../shared/errors/custom.error';
-
-interface UserBasicInfo {
-  id: string;
-  email: string;
-}
+import { UserBasicInfo } from '../../../core/models';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -15,6 +11,8 @@ declare module 'express-serve-static-core' {
 
 export class CurrentUserMiddleware {
   static handleUser = (req: Request, res: Response, next: NextFunction): void => {
+    console.log('hola');
+    
     if (!req.cookies.session) {
       throw AppError.unauthorized('Access denied, session expired');
     }

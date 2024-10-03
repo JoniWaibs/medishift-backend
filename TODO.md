@@ -2,6 +2,8 @@
 -  Hash password :done
 -  Add Express validators :done
 -  MongoDDBB  :done
--  JWT
--  compare hash
--  endpoints
+-  JWT :done
+-  compare hash :done
+-  auth endpoints :done
+-  Add validation to create patient
+-  configure vscode debugger

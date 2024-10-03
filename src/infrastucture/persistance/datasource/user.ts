@@ -1,27 +1,56 @@
 import { UserDatasource } from '../../../application/datasources';
 import { UserEntity } from '../../../core/entities/user';
+import { Patient, Doctor, UserBasicInfo } from '../../../core/models';
 import { AppError } from '../../../shared/errors/custom.error';
-import { User } from '../schemas/user';
+import { DoctorModel, PatientModel } from '../schemas';
 
 export class MongoDBDatasource implements UserDatasource {
-  async create<T>(user: UserEntity<T>): Promise<string> {
-    try {
-      const userCreated = await User.create<T>(user.data);
 
-      return userCreated.id as string;
+  async createDoctor<T extends Doctor>(user: UserEntity<T>): Promise<UserBasicInfo> {
+    try {
+      const userCreated = await DoctorModel.create(user.data);
+      
+      return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email };
     } catch (error: unknown) {
       throw AppError.internalServer(`User was not created in MongoDDBB - ${error}`);
     }
   }
-  async find<T>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
+  
+  async findByDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
     let user = null;
     try {
       if (id) {
-        user = await User.findById(id);
+        user = await DoctorModel.findById(id);        
       } else {
-        user = await User.findOne({ 'contactInfo.email': email });
+        user = await DoctorModel.findOne({ 'contactInfo.email': email });
       }
       return user as T;
+    } catch (error: unknown) {
+      throw AppError.internalServer(`User was not founded in MongoDDBB - ${error}`);
+    }
+  }
+
+  async createPatient<T extends Patient>(user: UserEntity<T>): Promise<UserBasicInfo> {
+    try {
+      const userCreated = await PatientModel.create(user.data);
+
+      return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email };
+    } catch (error: unknown) {
+      throw AppError.internalServer(`Patient was not created in MongoDDBB - ${error}`);
+    }
+  }
+
+  async findByPatient<T extends Patient>({ identificationNumber, id }: { identificationNumber?: number, id?: string }): Promise<T | null> {
+     let patient = null;
+
+    try {
+      if(id) {
+        patient = await PatientModel.findById( id );       
+      } else if(identificationNumber) {
+        patient = await PatientModel.findOne({ 'identificationNumber': identificationNumber });
+      }
+      
+      return patient as unknown as T;
     } catch (error: unknown) {
       throw AppError.internalServer(`User was not founded in MongoDDBB - ${error}`);
     }

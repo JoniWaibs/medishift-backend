@@ -12,6 +12,7 @@ export class MongoDDBB {
 
     try {
       await mongoose.connect(url, { dbName });
+
       console.log('mongoDDBB connected');
     } catch (error: unknown) {
       throw AppError.internalServer(`Can't conncet with mongoDDBB - ${error}`);
