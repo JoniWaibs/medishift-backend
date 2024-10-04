@@ -43,8 +43,9 @@ export class AppRoutes {
       patientController.getAll(req, res, next)
     );
     router.put('/user/patient/update');
-    router.delete('/user/patient/delete/:id',       
-      CurrentUserMiddleware.handleUser,      
+    router.delete(
+      '/user/patient/delete/:id',
+      CurrentUserMiddleware.handleUser,
       RequestAuthMiddleware.handleBasic,
       (req, res, next) => patientController.delete(req, res, next)
     );

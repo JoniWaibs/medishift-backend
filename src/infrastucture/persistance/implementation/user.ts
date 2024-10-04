@@ -27,6 +27,6 @@ export class UserRepositoryImplementation implements UserRepository {
     return this.datasource.findAllPatients();
   }
   deletePatient(id: string): Promise<boolean> {
-    return this.datasource.deletePatient(id)
+    return this.datasource.deletePatient(id);
   }
 }

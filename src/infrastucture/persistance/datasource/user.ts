@@ -72,8 +72,8 @@ export class MongoDBDatasource implements UserDatasource {
 
   async deletePatient(id: string): Promise<boolean> {
     try {
-      const deletedUser = await PatientModel.findByIdAndDelete(id)
-      return !!deletedUser
+      const deletedUser = await PatientModel.findByIdAndDelete(id);
+      return !!deletedUser;
     } catch (error) {
       throw AppError.internalServer(`User cannot deleted from MongoDDBB - ${error}`);
     }

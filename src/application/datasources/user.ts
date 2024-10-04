@@ -13,5 +13,5 @@ export abstract class UserDatasource {
     id?: string;
   }): Promise<T | null>;
   abstract findAllPatients<T extends Patient>(): Promise<T[] | []>;
-  abstract deletePatient(id: string): Promise<boolean>
+  abstract deletePatient(id: string): Promise<boolean>;
 }
