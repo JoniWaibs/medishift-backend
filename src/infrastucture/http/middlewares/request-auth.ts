@@ -3,10 +3,10 @@ import { AppError } from '../../../shared/errors/custom.error';
 import { UserRole } from '../../../core/enums';
 
 export class RequestAuthMiddleware {
-  static handleByRole = (req: Request, res: Response, next: NextFunction): void => {
-    const { role, id } = req.user!;    
+  static handleBasic = (req: Request, res: Response, next: NextFunction): void => {
+    const { role, id } = req.user!;
 
-    if (role.includes(UserRole.DOCTOR) || role.includes(UserRole.PATIENT) ) {      
+    if (role.includes(UserRole.DOCTOR) || role.includes(UserRole.PATIENT)) {
       console.log(`requestAuthMiddleware is called: userId ${id} has permissions by resource`);
       return next();
     }

@@ -11,8 +11,6 @@ declare module 'express-serve-static-core' {
 
 export class CurrentUserMiddleware {
   static handleUser = (req: Request, res: Response, next: NextFunction): void => {
-    console.log('hola');
-    
     if (!req.cookies.session) {
       throw AppError.unauthorized('Access denied, session expired');
     }

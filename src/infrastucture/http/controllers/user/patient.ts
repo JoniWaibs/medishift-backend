@@ -11,7 +11,7 @@ export class PatientController {
 
   public async create(req: Request, res: Response, next: NextFunction) {
     const { name, lastName, contactInfo, insurerData, identificationNumber } = req.body;
-    const { id } = req.user!; 
+    const { id } = req.user!;
 
     const patientExists = await new FindUser(this.repository).executeByPatient<Patient>({ identificationNumber });
 
@@ -19,7 +19,7 @@ export class PatientController {
       throw AppError.conflict('Patient already exists');
     }
 
-    try {      
+    try {
       const patient = await new CreateUser(this.repository).executeByPatient<Patient>({
         identificationNumber: Number(identificationNumber),
         name,
@@ -29,7 +29,7 @@ export class PatientController {
         contactInfo,
         isActive: true,
         insurerData,
-        createdBy: id,
+        createdBy: id
       });
 
       res.status(HttpCode.OK).json({
@@ -40,25 +40,48 @@ export class PatientController {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }
+
   public async getById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     if (!id) {
       throw AppError.conflict('Missing patient id');
     }
-    
+
     try {
-        const patientExists = await new FindUser(this.repository).executeByPatient<Patient>({ id: id as string });
-    
-        if (!patientExists) {
-          throw AppError.conflict('Patient does not exists');
-        }
-        
-        res.status(HttpCode.OK).json(patientExists);
+      const patientExists = await new FindUser(this.repository).executeByPatient<Patient>({ id: id as string });
+
+      if (!patientExists) {
+        throw AppError.conflict('Patient does not exists');
+      }
+
+      res.status(HttpCode.OK).json(patientExists);
     } catch (error) {
-        next(AppError.badRequest(`Something was wrong - ${error}`));
+      next(AppError.badRequest(`Something was wrong - ${error}`));
+    }
+  }
+
+  async getAll(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const patients = await this.repository.findAllPatients();
+
+      res.status(HttpCode.OK).json({ patients });
+    } catch (error) {
+      next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }
 
   public async update() {}
-  public async delete() {}
+  public async delete(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      await this.repository.deletePatient(id);
+
+      res.status(HttpCode.OK).json({
+        message: `User ${id} was deleted successfully`
+      });
+    } catch (error) {
+      next(AppError.badRequest(`Something was wrong - ${error}`));
+    }
+  }
 }

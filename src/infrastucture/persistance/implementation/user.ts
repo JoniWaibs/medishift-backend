@@ -4,7 +4,6 @@ import { Patient, Doctor, UserBasicInfo } from '../../../core/models';
 
 export class UserRepositoryImplementation implements UserRepository {
   constructor(private readonly datasource: UserRepository) {}
-
   createDoctor<T extends Doctor>(user: UserEntity<T>): Promise<UserBasicInfo> {
     return this.datasource.createDoctor<T>(user);
   }
@@ -15,7 +14,19 @@ export class UserRepositoryImplementation implements UserRepository {
   createPatient<T extends Patient>(patient: UserEntity<T>): Promise<UserBasicInfo> {
     return this.datasource.createPatient<T>(patient);
   }
-  findByPatient<T extends Patient>({ identificationNumber, id }: { identificationNumber?: number, id?: string }): Promise<T | null> {
+  findByPatient<T extends Patient>({
+    identificationNumber,
+    id
+  }: {
+    identificationNumber?: number;
+    id?: string;
+  }): Promise<T | null> {
     return this.datasource.findByPatient({ identificationNumber, id });
+  }
+  findAllPatients<T extends Patient>(): Promise<T[] | []> {
+    return this.datasource.findAllPatients();
+  }
+  deletePatient(id: string): Promise<boolean> {
+    return this.datasource.deletePatient(id)
   }
 }

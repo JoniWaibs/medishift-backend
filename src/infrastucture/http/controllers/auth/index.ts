@@ -15,7 +15,7 @@ export class AuthController {
     const { name, lastName, password, licenseNumber, contactInfo } = req.body;
 
     const userExists = await new FindUser(this.repository).executeByDoctor<Doctor>({ email: contactInfo.email });
-    
+
     if (userExists) {
       throw AppError.conflict('User already exists, you must login with your credentials');
     }
