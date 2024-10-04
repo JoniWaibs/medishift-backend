@@ -3,7 +3,13 @@ import { UserRepository } from '../repository';
 
 export interface FindUserUseCase {
   executeByDoctor: <T extends Doctor>({ id, email }: { id?: string; email?: string }) => Promise<T | null>;
-  executeByPatient: <T extends Patient>({ identificationNumber, id }: { identificationNumber?: number, id?: string }) => Promise<T | null>;
+  executeByPatient: <T extends Patient>({
+    identificationNumber,
+    id
+  }: {
+    identificationNumber?: number;
+    id?: string;
+  }) => Promise<T | null>;
 }
 
 export class FindUser implements FindUserUseCase {
@@ -13,7 +19,13 @@ export class FindUser implements FindUserUseCase {
     return await this.repository.findByDoctor({ id, email });
   }
 
-  async executeByPatient<T extends Patient>({ identificationNumber, id }: { identificationNumber?: number, id?: string } ): Promise<T | null> {    
+  async executeByPatient<T extends Patient>({
+    identificationNumber,
+    id
+  }: {
+    identificationNumber?: number;
+    id?: string;
+  }): Promise<T | null> {
     return await this.repository.findByPatient({ identificationNumber, id });
   }
 }

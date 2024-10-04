@@ -42,5 +42,5 @@ export interface Patient extends BaseUser {
   currentMedications?: string[];
   isActive: boolean;
   insurerData: InsusrerData;
-  createdBy: string,
+  createdBy: string;
 }

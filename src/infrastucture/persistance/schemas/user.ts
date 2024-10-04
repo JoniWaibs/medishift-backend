@@ -101,7 +101,7 @@ export const PatientSchemma = new mongoose.Schema<Omit<Patient, 'id'>>({
   identificationNumber: {
     type: Number,
     trim: true,
-    required: true,
+    required: true
   },
   medicalHistory: {
     updatedAt: {
@@ -112,7 +112,7 @@ export const PatientSchemma = new mongoose.Schema<Omit<Patient, 'id'>>({
       trim: true
     },
     writedBy: {
-      type: String,
+      type: String
     }
   },
   notes: {
@@ -161,7 +161,7 @@ export const PatientSchemma = new mongoose.Schema<Omit<Patient, 'id'>>({
   },
   createdBy: {
     type: String,
-    required: true,
+    required: true
   }
 });
 

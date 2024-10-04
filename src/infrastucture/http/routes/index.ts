@@ -24,23 +24,30 @@ export class AppRoutes {
     );
     router.get('/auth/sign-in', validate(Validator.signIn), (req, res) => authController.signIn(req, res));
     router.post('/auth/sign-out', (req, res) => authController.signOut(req, res));
-    
+
     // User routes
     router.post(
       '/user/patient/create',
+      validate(Validator.patient),
       CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleByRole,
+      RequestAuthMiddleware.handleBasic,
       (req, res, next) => patientController.create(req, res, next)
     );
-    router.get('/user/patient/profile/:id',       
+    router.get(
+      '/user/patient/profile/:id',
       CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleByRole,
+      RequestAuthMiddleware.handleBasic,
       (req, res, next) => patientController.getById(req, res, next)
     );
-    
-    router.get('/user/patient/all');
-    router.delete('/user/patient/delete');
+    router.get('/user/patient/all', CurrentUserMiddleware.handleUser, (req, res, next) =>
+      patientController.getAll(req, res, next)
+    );
     router.put('/user/patient/update');
+    router.delete('/user/patient/delete/:id',       
+      CurrentUserMiddleware.handleUser,      
+      RequestAuthMiddleware.handleBasic,
+      (req, res, next) => patientController.delete(req, res, next)
+    );
     // rest of routes
     // ...
 
