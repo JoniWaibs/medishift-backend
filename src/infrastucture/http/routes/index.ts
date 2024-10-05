@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { MongoDBDatasource } from '../../persistance/datasource/user';
+import { MongoDBUserDatasource } from '../../persistance/datasource/user';
 import { UserRepositoryImplementation } from '../../persistance/implementation/user';
 import { Validator } from '../../../shared/utils/schemma-validator';
 import { validate } from '../middlewares/validator';
@@ -7,15 +7,22 @@ import { AuthController } from '../controllers/auth';
 import { CurrentUserMiddleware } from '../middlewares/current-user';
 import { RequestAuthMiddleware } from '../middlewares/request-auth';
 import { PatientController } from '../controllers/user';
+import { MongoDBShiftDataSource } from '../../persistance/datasource';
+import { ShiftRepositoryImplementation } from '../../persistance/implementation';
+import { ShiftController } from '../controllers/shift';
 
 export class AppRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const mongoDataSource = new MongoDBDatasource();
-    const userImplementation = new UserRepositoryImplementation(mongoDataSource);
+    const mongoUserDataSource = new MongoDBUserDatasource();
+    const userImplementation = new UserRepositoryImplementation(mongoUserDataSource);
     const authController = new AuthController(userImplementation);
     const patientController = new PatientController(userImplementation);
+
+    const mongoShiftDataSource = new MongoDBShiftDataSource();
+    const shiftImplementation = new ShiftRepositoryImplementation(mongoShiftDataSource);
+    const shiftController = new ShiftController(shiftImplementation);
 
     // Auth routes
     router.post('/auth/sign-up', validate(Validator.signUp), (req, res, next) => authController.signUp(req, res, next));
@@ -55,8 +62,17 @@ export class AppRoutes {
       RequestAuthMiddleware.handleBasic,
       (req, res, next) => patientController.delete(req, res, next)
     );
-    // rest of routes
-    // ...
+
+    //medical shift routes
+    router.post('/shift/create', 
+      CurrentUserMiddleware.handleUser, 
+      RequestAuthMiddleware.handleBasic,
+      (req, res, next) => shiftController.create(req, res, next)
+    );
+    router.post('/shift/update/:id');
+
+    //TODO create doctor routes using DoctorController
+    //TODO create clinic routes using ClinicController
 
     return router;
   }

@@ -4,7 +4,7 @@ import { Patient, Doctor, UserBasicInfo } from '../../../../core/models';
 import { AppError } from '../../../../shared/errors/custom.error';
 import { DoctorModel, PatientModel } from '../../schemas';
 
-export class MongoDBDatasource implements UserDatasource {
+export class MongoDBUserDatasource implements UserDatasource {
   async createDoctor<T extends Doctor>(userData: UserEntity<T>): Promise<UserBasicInfo> {
     try {
       const userCreated = await DoctorModel.create(userData.data);
@@ -74,7 +74,7 @@ export class MongoDBDatasource implements UserDatasource {
     try {
       const deletedUser = await PatientModel.findByIdAndDelete(id);
       return !!deletedUser;
-    } catch (error) {
+    } catch (error: unknown) {
       throw AppError.internalServer(`User cannot deleted from MongoDDBB - ${error}`);
     }
   }
@@ -88,7 +88,7 @@ export class MongoDBDatasource implements UserDatasource {
       }
 
       return { id: patientUpdated.id, role: patientUpdated.role, email: patientUpdated.contactInfo.email };
-    } catch (error) {
+    } catch (error: unknown) {
       throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);
     }
   }

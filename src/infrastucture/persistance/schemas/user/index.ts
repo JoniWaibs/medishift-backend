@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import mongoose from 'mongoose';
-import { Password } from '../../../shared/utils/password-hasher';
-import { BaseUser, Patient, Doctor } from '../../../core/models';
+import { Password } from '../../../../shared/utils/password-hasher';
+import { BaseUser, Patient, Doctor } from '../../../../core/models';
 
 export const BaseUserSchemma = new mongoose.Schema<Omit<BaseUser, 'id'>>(
   {
@@ -79,6 +79,7 @@ export const BaseUserSchemma = new mongoose.Schema<Omit<BaseUser, 'id'>>(
     }
   },
   {
+    timestamps: true,
     toJSON: {
       /**
        * Mongoose will transform the returned object
@@ -101,6 +102,7 @@ export const PatientSchemma = new mongoose.Schema<Omit<Patient, 'id'>>({
   identificationNumber: {
     type: Number,
     trim: true,
+    unique: true,
     required: true
   },
   medicalHistory: {

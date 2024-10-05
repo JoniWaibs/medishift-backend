@@ -11,7 +11,7 @@ import { Password } from '../../../../shared/utils/password-hasher';
 export class AuthController {
   constructor(private readonly repository: UserRepository) {}
 
-  public async signUp(req: Request, res: Response, next: NextFunction) {
+  async signUp(req: Request, res: Response, next: NextFunction) {
     const { name, lastName, password, licenseNumber, contactInfo } = req.body;
 
     const user = await new FindUser(this.repository).executeByDoctor<Doctor>({ email: contactInfo.email });
@@ -37,7 +37,7 @@ export class AuthController {
         id: userCreated.id,
         message: `User was created successfully`
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }
