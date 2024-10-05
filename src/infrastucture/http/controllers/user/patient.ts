@@ -49,7 +49,7 @@ export class PatientController {
     }
 
     try {
-      const patientId = new mongoose.Types.ObjectId(id).toString()
+      const patientId = new mongoose.Types.ObjectId(id).toString();
       const patient = await new FindUser(this.repository).executeByPatient<Patient>({ id: patientId });
 
       if (!patient) {
@@ -77,7 +77,7 @@ export class PatientController {
     if (!id) {
       throw AppError.notFound('Missing patient id');
     }
-    const patientId = new mongoose.Types.ObjectId(id).toString()
+    const patientId = new mongoose.Types.ObjectId(id).toString();
     const patient = await new FindUser(this.repository).executeByPatient<Patient>({ id: patientId });
 
     if (!patient) {
@@ -87,12 +87,12 @@ export class PatientController {
     const userData = req.body;
 
     try {
-      const patientUpdated = await new UpdateUser(this.repository).executeByPatient({id: patientId, userData })
+      const patientUpdated = await new UpdateUser(this.repository).executeByPatient({ id: patientId, userData });
 
-      if(!patientUpdated) {
+      if (!patientUpdated) {
         throw AppError.conflict('Patient cant be update');
       }
-      
+
       res.status(HttpCode.OK).json({
         id: patientUpdated.id,
         message: `Patient was updated successfully`

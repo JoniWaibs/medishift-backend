@@ -79,15 +79,14 @@ export class MongoDBDatasource implements UserDatasource {
     }
   }
 
-  async updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T; }): Promise<UserBasicInfo | null> {
-
+  async updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null> {
     try {
-      const patientUpdated = await PatientModel.findByIdAndUpdate(id, userData, { returnDocument: "after"} )
+      const patientUpdated = await PatientModel.findByIdAndUpdate(id, userData, { returnDocument: 'after' });
 
-      if(!patientUpdated) {
+      if (!patientUpdated) {
         return null;
       }
-      
+
       return { id: patientUpdated.id, role: patientUpdated.role, email: patientUpdated.contactInfo.email };
     } catch (error) {
       throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);

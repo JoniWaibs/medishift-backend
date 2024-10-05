@@ -14,7 +14,7 @@ export class Validator {
       body('contactInfo.address.province').optional().isString().trim(),
       body('contactInfo.address.country').optional().isString().trim(),
       body('password').trim().isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-      body('licenseNumber').optional().isString().trim(),
+      body('licenseNumber').optional().isString().trim()
     ];
   }
 
@@ -42,7 +42,7 @@ export class Validator {
       body('emergencyContact.name').optional().isString().trim(),
       body('emergencyContact.relation').optional().isString().trim(),
       body('emergencyContact.phone.area').optional().isString().trim(),
-      body('emergencyContact.phone.number').optional().isString().trim(),
+      body('emergencyContact.phone.number').optional().isString().trim()
     ];
   }
 }

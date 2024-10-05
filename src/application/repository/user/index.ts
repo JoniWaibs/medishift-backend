@@ -15,5 +15,11 @@ export abstract class UserRepository {
   }): Promise<T | null>;
   abstract findAllPatients<T extends Patient>(): Promise<T[] | []>;
   abstract deletePatient(id: string): Promise<boolean>;
-  abstract updatePatient<T extends Patient>({id, userData}: {id: string, userData: T}): Promise<UserBasicInfo | null>;
+  abstract updatePatient<T extends Patient>({
+    id,
+    userData
+  }: {
+    id: string;
+    userData: T;
+  }): Promise<UserBasicInfo | null>;
 }

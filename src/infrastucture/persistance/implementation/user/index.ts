@@ -29,7 +29,7 @@ export class UserRepositoryImplementation implements UserRepository {
   deletePatient(id: string): Promise<boolean> {
     return this.datasource.deletePatient(id);
   }
-  updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T; }): Promise<UserBasicInfo | null> {
-    return this.datasource.updatePatient({id ,userData})
+  updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null> {
+    return this.datasource.updatePatient({ id, userData });
   }
 }
