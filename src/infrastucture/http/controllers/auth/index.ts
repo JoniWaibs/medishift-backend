@@ -14,14 +14,14 @@ export class AuthController {
   public async signUp(req: Request, res: Response, next: NextFunction) {
     const { name, lastName, password, licenseNumber, contactInfo } = req.body;
 
-    const userExists = await new FindUser(this.repository).executeByDoctor<Doctor>({ email: contactInfo.email });
+    const user = await new FindUser(this.repository).executeByDoctor<Doctor>({ email: contactInfo.email });
 
-    if (userExists) {
+    if (user) {
       throw AppError.conflict('User already exists, you must login with your credentials');
     }
 
     try {
-      const user = await new CreateUser(this.repository).executeByDoctor<Doctor>({
+      const userCreated = await new CreateUser(this.repository).executeByDoctor<Doctor>({
         name,
         lastName,
         role: UserRole.DOCTOR,
@@ -31,10 +31,10 @@ export class AuthController {
         password
       });
 
-      const token = AuthService.generateToken({ id: user.id, email: user.email, role: user.role });
+      const token = AuthService.generateToken({ id: userCreated.id, email: userCreated.email, role: userCreated.role });
 
       res.cookie('session', token, cookieOptions).status(HttpCode.OK).json({
-        id: user.id,
+        id: userCreated.id,
         message: `User was created successfully`
       });
     } catch (error) {
@@ -48,7 +48,7 @@ export class AuthController {
     const user = await new FindUser(this.repository).executeByDoctor<Doctor>({ email });
 
     if (!user) {
-      throw AppError.unauthorized('User not found, you can create a free account');
+      throw AppError.notFound('User not found, you can create a free account');
     }
 
     const isMatch = await Password.compare(user.password, password);

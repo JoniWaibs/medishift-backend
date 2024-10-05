@@ -1,10 +1,11 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import { UserRepository } from '../../../../application/repository';
-import { FindUser } from '../../../../application/use-cases/find-user';
 import { Patient } from '../../../../core/models';
 import { AppError } from '../../../../shared/errors/custom.error';
-import { CreateUser } from '../../../../application/use-cases';
+import { CreateUser, FindUser } from '../../../../application/use-cases';
 import { HttpCode, UserRole } from '../../../../core/enums';
+import { UpdateUser } from '../../../../application/use-cases/user/update-user';
+import mongoose from 'mongoose';
 
 export class PatientController {
   constructor(private readonly repository: UserRepository) {}
@@ -13,14 +14,14 @@ export class PatientController {
     const { name, lastName, contactInfo, insurerData, identificationNumber } = req.body;
     const { id } = req.user!;
 
-    const patientExists = await new FindUser(this.repository).executeByPatient<Patient>({ identificationNumber });
+    const patient = await new FindUser(this.repository).executeByPatient<Patient>({ identificationNumber });
 
-    if (patientExists) {
+    if (patient) {
       throw AppError.conflict('Patient already exists');
     }
 
     try {
-      const patient = await new CreateUser(this.repository).executeByPatient<Patient>({
+      const patientCreated = await new CreateUser(this.repository).executeByPatient<Patient>({
         identificationNumber: Number(identificationNumber),
         name,
         lastName,
@@ -33,7 +34,7 @@ export class PatientController {
       });
 
       res.status(HttpCode.OK).json({
-        id: patient.id,
+        id: patientCreated.id,
         message: `Patient was created successfully`
       });
     } catch (error) {
@@ -44,17 +45,18 @@ export class PatientController {
   public async getById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     if (!id) {
-      throw AppError.conflict('Missing patient id');
+      throw AppError.notFound('Missing patient id');
     }
 
     try {
-      const patientExists = await new FindUser(this.repository).executeByPatient<Patient>({ id: id as string });
+      const patientId = new mongoose.Types.ObjectId(id).toString();
+      const patient = await new FindUser(this.repository).executeByPatient<Patient>({ id: patientId });
 
-      if (!patientExists) {
-        throw AppError.conflict('Patient does not exists');
+      if (!patient) {
+        throw AppError.notFound('Patient does not exists');
       }
 
-      res.status(HttpCode.OK).json(patientExists);
+      res.status(HttpCode.OK).json(patient);
     } catch (error) {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
@@ -70,7 +72,35 @@ export class PatientController {
     }
   }
 
-  public async update() {}
+  public async update(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    if (!id) {
+      throw AppError.notFound('Missing patient id');
+    }
+    const patientId = new mongoose.Types.ObjectId(id).toString();
+    const patient = await new FindUser(this.repository).executeByPatient<Patient>({ id: patientId });
+
+    if (!patient) {
+      throw AppError.notFound('Patient does not exists');
+    }
+
+    const userData = req.body;
+
+    try {
+      const patientUpdated = await new UpdateUser(this.repository).executeByPatient({ id: patientId, userData });
+
+      if (!patientUpdated) {
+        throw AppError.conflict('Patient cant be update');
+      }
+
+      res.status(HttpCode.OK).json({
+        id: patientUpdated.id,
+        message: `Patient was updated successfully`
+      });
+    } catch (error) {
+      next(AppError.badRequest(`Something was wrong - ${error}`));
+    }
+  }
   public async delete(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 

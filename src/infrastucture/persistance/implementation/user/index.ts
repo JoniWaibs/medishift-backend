@@ -1,6 +1,6 @@
-import { UserRepository } from '../../../application/repository';
-import { UserEntity } from '../../../core/entities/user';
-import { Patient, Doctor, UserBasicInfo } from '../../../core/models';
+import { UserRepository } from '../../../../application/repository';
+import { UserEntity } from '../../../../core/entities/user';
+import { Patient, Doctor, UserBasicInfo } from '../../../../core/models';
 
 export class UserRepositoryImplementation implements UserRepository {
   constructor(private readonly datasource: UserRepository) {}
@@ -11,8 +11,8 @@ export class UserRepositoryImplementation implements UserRepository {
     return this.datasource.findByDoctor({ id, email });
   }
 
-  createPatient<T extends Patient>(patient: UserEntity<T>): Promise<UserBasicInfo> {
-    return this.datasource.createPatient<T>(patient);
+  createPatient<T extends Patient>(userData: UserEntity<T>): Promise<UserBasicInfo> {
+    return this.datasource.createPatient<T>(userData);
   }
   findByPatient<T extends Patient>({
     identificationNumber,
@@ -27,6 +27,9 @@ export class UserRepositoryImplementation implements UserRepository {
     return this.datasource.findAllPatients();
   }
   deletePatient(id: string): Promise<boolean> {
-    return this.datasource.deletePatient(id)
+    return this.datasource.deletePatient(id);
+  }
+  updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null> {
+    return this.datasource.updatePatient({ id, userData });
   }
 }

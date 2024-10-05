@@ -1,6 +1,6 @@
-import { UserEntity } from '../../core/entities/user';
-import { Doctor, Patient, UserBasicInfo } from '../../core/models';
-import { UserRepository } from '../repository';
+import { UserEntity } from '../../../core/entities/user';
+import { Doctor, Patient, UserBasicInfo } from '../../../core/models';
+import { UserRepository } from '../../repository';
 
 export interface CreateUserUseCase {
   executeByDoctor: <T extends Doctor>(userData: T) => Promise<UserBasicInfo>;

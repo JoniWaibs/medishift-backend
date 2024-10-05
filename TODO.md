@@ -8,3 +8,4 @@
 -  Add validation to create patient :done
 -  Add findAndUpdate patients
 -  configure vscode debugger
+-  add github actions + precommit
