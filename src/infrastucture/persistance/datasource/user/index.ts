@@ -1,13 +1,13 @@
-import { UserDatasource } from '../../../application/datasources';
-import { UserEntity } from '../../../core/entities/user';
-import { Patient, Doctor, UserBasicInfo } from '../../../core/models';
-import { AppError } from '../../../shared/errors/custom.error';
-import { DoctorModel, PatientModel } from '../schemas';
+import { UserDatasource } from '../../../../application/datasources';
+import { UserEntity } from '../../../../core/entities/user';
+import { Patient, Doctor, UserBasicInfo } from '../../../../core/models';
+import { AppError } from '../../../../shared/errors/custom.error';
+import { DoctorModel, PatientModel } from '../../schemas';
 
 export class MongoDBDatasource implements UserDatasource {
-  async createDoctor<T extends Doctor>(user: UserEntity<T>): Promise<UserBasicInfo> {
+  async createDoctor<T extends Doctor>(userData: UserEntity<T>): Promise<UserBasicInfo> {
     try {
-      const userCreated = await DoctorModel.create(user.data);
+      const userCreated = await DoctorModel.create(userData.data);
 
       return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email };
     } catch (error: unknown) {
@@ -29,9 +29,9 @@ export class MongoDBDatasource implements UserDatasource {
     }
   }
 
-  async createPatient<T extends Patient>(user: UserEntity<T>): Promise<UserBasicInfo> {
+  async createPatient<T extends Patient>(userData: UserEntity<T>): Promise<UserBasicInfo> {
     try {
-      const userCreated = await PatientModel.create(user.data);
+      const userCreated = await PatientModel.create(userData.data);
 
       return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email };
     } catch (error: unknown) {
@@ -76,6 +76,21 @@ export class MongoDBDatasource implements UserDatasource {
       return !!deletedUser;
     } catch (error) {
       throw AppError.internalServer(`User cannot deleted from MongoDDBB - ${error}`);
+    }
+  }
+
+  async updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T; }): Promise<UserBasicInfo | null> {
+
+    try {
+      const patientUpdated = await PatientModel.findByIdAndUpdate(id, userData, { returnDocument: "after"} )
+
+      if(!patientUpdated) {
+        return null;
+      }
+      
+      return { id: patientUpdated.id, role: patientUpdated.role, email: patientUpdated.contactInfo.email };
+    } catch (error) {
+      throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);
     }
   }
 }

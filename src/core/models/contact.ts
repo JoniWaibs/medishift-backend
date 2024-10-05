@@ -1,7 +1,7 @@
 export interface ContactInfo {
   email: string;
   phone: {
-    countryCod?: string;
+    countryCode?: string;
     area: string;
     number: string;
   };
@@ -14,11 +14,7 @@ export interface ContactInfo {
 }
 
 export interface EmergencyContactInfo {
-  name: string;
-  relation: string; // Relation to the patient (e.g., spouse, parent, friend)
-  phone: {
-    countryCod?: string;
-    area: string;
-    number: string;
-  };
+  name?: string;
+  relation?: string; // Relation to the patient (e.g., spouse, parent, friend)
+  phone?: ContactInfo['phone'];
 }

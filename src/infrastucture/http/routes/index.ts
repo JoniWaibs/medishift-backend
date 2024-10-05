@@ -42,7 +42,12 @@ export class AppRoutes {
     router.get('/user/patient/all', CurrentUserMiddleware.handleUser, (req, res, next) =>
       patientController.getAll(req, res, next)
     );
-    router.put('/user/patient/update');
+    router.put('/user/patient/update/:id', 
+      validate(Validator.patient),
+      CurrentUserMiddleware.handleUser,
+      RequestAuthMiddleware.handleBasic,
+      (req, res, next) => patientController.update(req, res, next)
+    );
     router.delete(
       '/user/patient/delete/:id',
       CurrentUserMiddleware.handleUser,
