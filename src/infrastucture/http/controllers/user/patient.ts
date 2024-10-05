@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 export class PatientController {
   constructor(private readonly repository: UserRepository) {}
 
-  public async create(req: Request, res: Response, next: NextFunction) {
+  async create(req: Request, res: Response, next: NextFunction) {
     const { name, lastName, contactInfo, insurerData, identificationNumber } = req.body;
     const { id } = req.user!;
 
@@ -37,12 +37,12 @@ export class PatientController {
         id: patientCreated.id,
         message: `Patient was created successfully`
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }
 
-  public async getById(req: Request, res: Response, next: NextFunction) {
+  async getById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     if (!id) {
       throw AppError.notFound('Missing patient id');
@@ -57,7 +57,7 @@ export class PatientController {
       }
 
       res.status(HttpCode.OK).json(patient);
-    } catch (error) {
+    } catch (error: unknown) {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }
@@ -67,12 +67,12 @@ export class PatientController {
       const patients = await this.repository.findAllPatients();
 
       res.status(HttpCode.OK).json({ patients });
-    } catch (error) {
+    } catch (error: unknown) {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }
 
-  public async update(req: Request, res: Response, next: NextFunction) {
+  async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     if (!id) {
       throw AppError.notFound('Missing patient id');
@@ -97,11 +97,12 @@ export class PatientController {
         id: patientUpdated.id,
         message: `Patient was updated successfully`
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }
-  public async delete(req: Request, res: Response, next: NextFunction) {
+
+  async delete(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
@@ -110,7 +111,7 @@ export class PatientController {
       res.status(HttpCode.OK).json({
         message: `User ${id} was deleted successfully`
       });
-    } catch (error) {
+    } catch (error: unknown) {
       next(AppError.badRequest(`Something was wrong - ${error}`));
     }
   }

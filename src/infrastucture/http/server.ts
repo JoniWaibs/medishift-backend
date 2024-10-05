@@ -13,7 +13,7 @@ interface ServerOptions {
 }
 
 export class Server {
-  public readonly app = express(); // This is public for testing purposes
+  readonly app = express(); // This is  for testing purposes
   #serverListener?: ServerHttp<typeof IncomingMessage, typeof ServerResponse>;
   readonly #port: number;
   readonly #routes: Router;

@@ -16,13 +16,13 @@ export enum UserRole {
 
 export enum ShiftStatus {
   PENDING = 'pending',
-  COMPLETE = 'complete',
+  COMPLETE = 'completed',
   SUSPENDED = 'suspended',
-  REPROGRAMMED = 'reprogrammed',
-  CANCELLED = 'cancelled'
+  CANCELED = 'canceled'
 }
 
 export enum paymentStatus {
-  DONE = 'done',
-  PENDING = 'pending'
+  PAID = 'paid',
+  PENDING = 'pending',
+  UNPAID = 'unpaid'
 }

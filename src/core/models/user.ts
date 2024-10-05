@@ -14,9 +14,9 @@ interface InsusrerData {
 export interface BaseUser {
   id?: string;
   name: string;
+  lastName: string;
   role: UserRole;
   profilePictureUrl?: string;
-  lastName: string;
   createdAt: Date;
   dateOfBirth?: Date;
   contactInfo: ContactInfo;
