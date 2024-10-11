@@ -9,13 +9,13 @@ export class MongoDBUserDatasource implements UserDatasource {
     try {
       const userCreated = await DoctorModel.create(userData.data);
 
-      return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email };
+      return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email! };
     } catch (error: unknown) {
       throw AppError.internalServer(`User was not created in MongoDDBB - ${error}`);
     }
   }
 
-  async findByDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
+  async findDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
     let user = null;
     try {
       if (id) {
@@ -33,13 +33,13 @@ export class MongoDBUserDatasource implements UserDatasource {
     try {
       const userCreated = await PatientModel.create(userData.data);
 
-      return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email };
+      return { id: userCreated.id, role: userCreated.role };
     } catch (error: unknown) {
       throw AppError.internalServer(`Patient was not created in MongoDDBB - ${error}`);
     }
   }
 
-  async findByPatient<T extends Patient>({
+  async findPatient<T extends Patient>({
     identificationNumber,
     id
   }: {
@@ -87,7 +87,7 @@ export class MongoDBUserDatasource implements UserDatasource {
         return null;
       }
 
-      return { id: patientUpdated.id, role: patientUpdated.role, email: patientUpdated.contactInfo.email };
+      return { id: patientUpdated.id, role: patientUpdated.role };
     } catch (error: unknown) {
       throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);
     }

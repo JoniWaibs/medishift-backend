@@ -25,20 +25,23 @@ export class AuthController {
         name,
         lastName,
         role: UserRole.DOCTOR,
-        createdAt: new Date(),
         contactInfo,
         licenseNumber,
         password
       });
 
-      const token = AuthService.generateToken({ id: userCreated.id, email: userCreated.email, role: userCreated.role });
+      const token = AuthService.generateToken({
+        id: userCreated.id,
+        email: userCreated.email!,
+        role: userCreated.role
+      });
 
       res.cookie('session', token, cookieOptions).status(HttpCode.OK).json({
         id: userCreated.id,
         message: `User was created successfully`
       });
     } catch (error: unknown) {
-      next(AppError.badRequest(`Something was wrong - ${error}`));
+      next(error);
     }
   }
 
@@ -57,7 +60,7 @@ export class AuthController {
       throw AppError.unauthorized('Password does not match');
     }
 
-    const token = AuthService.generateToken({ id: user.id!, email: user.contactInfo.email, role: user.role });
+    const token = AuthService.generateToken({ id: user.id!, email: user.contactInfo.email!, role: user.role });
 
     res.cookie('session', token, cookieOptions).status(HttpCode.OK).json(user);
   }

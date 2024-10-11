@@ -20,7 +20,7 @@ export class CurrentUserMiddleware {
 
       req.user = payload;
 
-      console.log(`currentUserMiddleware is called: userId is: ${payload.id}`);
+      console.log(`currentUserMiddleware - current user is: ${payload.id}`);
       next();
     } catch (error: unknown) {
       next(AppError.unauthorized(`Invalid token - ${error}`));

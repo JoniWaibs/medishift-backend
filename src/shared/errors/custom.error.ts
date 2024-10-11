@@ -21,6 +21,7 @@ export class AppError extends Error {
 
   constructor(args: AppErrorArgs) {
     const { message, name, status, isOperational, validationErrors } = args;
+
     super(message);
     Object.setPrototypeOf(this, new.target.prototype);
     this.name = name ?? 'Aplication Error';
@@ -31,7 +32,7 @@ export class AppError extends Error {
   }
 
   static conflict(message: string, validationErrors?: ValidationType[]): AppError {
-    return new AppError({ name: 'ConflictError', message, status: HttpCode.BAD_REQUEST, validationErrors });
+    return new AppError({ name: 'ConflictError', message, status: HttpCode.CONFLICT, validationErrors });
   }
 
   static badRequest(message: string, validationErrors?: ValidationType[]): AppError {

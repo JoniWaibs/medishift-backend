@@ -26,7 +26,6 @@ export class PatientController {
         name,
         lastName,
         role: UserRole.PATIENT,
-        createdAt: new Date(),
         contactInfo,
         isActive: true,
         insurerData,
@@ -38,7 +37,7 @@ export class PatientController {
         message: `Patient was created successfully`
       });
     } catch (error: unknown) {
-      next(AppError.badRequest(`Something was wrong - ${error}`));
+      next(error);
     }
   }
 
@@ -58,7 +57,7 @@ export class PatientController {
 
       res.status(HttpCode.OK).json(patient);
     } catch (error: unknown) {
-      next(AppError.badRequest(`Something was wrong - ${error}`));
+      next(error);
     }
   }
 
@@ -68,7 +67,7 @@ export class PatientController {
 
       res.status(HttpCode.OK).json({ patients });
     } catch (error: unknown) {
-      next(AppError.badRequest(`Something was wrong - ${error}`));
+      next(error);
     }
   }
 
@@ -98,7 +97,7 @@ export class PatientController {
         message: `Patient was updated successfully`
       });
     } catch (error: unknown) {
-      next(AppError.badRequest(`Something was wrong - ${error}`));
+      next(error);
     }
   }
 
@@ -112,7 +111,7 @@ export class PatientController {
         message: `User ${id} was deleted successfully`
       });
     } catch (error: unknown) {
-      next(AppError.badRequest(`Something was wrong - ${error}`));
+      next(error);
     }
   }
 }

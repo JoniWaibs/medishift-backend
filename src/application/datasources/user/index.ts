@@ -2,10 +2,10 @@ import { UserEntity } from '../../../core/entities/user';
 import { Patient, Doctor, UserBasicInfo } from '../../../core/models';
 export abstract class UserDatasource {
   abstract createDoctor<T extends Doctor>(userData: UserEntity<T>): Promise<UserBasicInfo>;
-  abstract findByDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null>;
+  abstract findDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null>;
 
   abstract createPatient<T extends Patient>(userData: UserEntity<T>): Promise<UserBasicInfo>;
-  abstract findByPatient<T extends Patient>({
+  abstract findPatient<T extends Patient>({
     identificationNumber,
     id
   }: {

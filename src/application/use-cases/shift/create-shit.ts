@@ -10,6 +10,6 @@ export class CreateShift implements CreateShiftUseCase {
   constructor(private readonly repository: ShiftRepository) {}
 
   async create(shiftData: ShiftEntity): Promise<ShitfBasicInfo> {
-    return this.repository.create(shiftData);
+    return this.repository.create(new ShiftEntity(shiftData.data));
   }
 }

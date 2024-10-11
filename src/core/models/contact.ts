@@ -1,5 +1,5 @@
 export interface ContactInfo {
-  email: string;
+  email?: string;
   phone: {
     countryCode?: string;
     area: string;
@@ -16,5 +16,5 @@ export interface ContactInfo {
 export interface EmergencyContactInfo {
   name?: string;
   relation?: string; // Relation to the patient (e.g., spouse, parent, friend)
-  phone?: ContactInfo['phone'];
+  contactInfo: ContactInfo;
 }

@@ -21,8 +21,20 @@ export enum ShiftStatus {
   CANCELED = 'canceled'
 }
 
-export enum paymentStatus {
+export enum PaymentStatus {
   PAID = 'paid',
   PENDING = 'pending',
   UNPAID = 'unpaid'
+}
+
+export enum PaymentMethod {
+  CASH = 'cash',
+  TRANSFER = 'transfer',
+  CREDIT_CARD = 'credit_card',
+  DEBIT_CARD = 'debit_card'
+}
+
+export enum CurrencyType {
+  ARS = 'ARS',
+  USD = 'USD'
 }

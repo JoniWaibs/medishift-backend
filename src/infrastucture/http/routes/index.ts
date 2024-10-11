@@ -64,12 +64,15 @@ export class AppRoutes {
     );
 
     //medical shift routes
-    router.post('/shift/create', 
-      CurrentUserMiddleware.handleUser, 
+    router.post(
+      '/shift/create',
+      CurrentUserMiddleware.handleUser,
       RequestAuthMiddleware.handleBasic,
       (req, res, next) => shiftController.create(req, res, next)
     );
+    router.post('/shift/all');
     router.post('/shift/update/:id');
+    router.post('/shift/:id');
 
     //TODO create doctor routes using DoctorController
     //TODO create clinic routes using ClinicController

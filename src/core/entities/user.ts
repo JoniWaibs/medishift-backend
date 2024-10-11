@@ -1,5 +1,7 @@
 export class UserEntity<T> {
-  //TODO: Add method to recover password
-  //TODO: Add method to add role
+  //TODO: method to recover password
+  //TODO: method to add role
+  //TODO: method to add medicalHistory
+  //TODO: method to add currentMedications
   constructor(readonly data: T) {}
 }

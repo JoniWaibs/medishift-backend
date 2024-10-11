@@ -3,8 +3,10 @@
 import mongoose from 'mongoose';
 import { Password } from '../../../../shared/utils/password-hasher';
 import { BaseUser, Patient, Doctor } from '../../../../core/models';
+import { ContactInfoSchema } from '../shared';
+import { HandleDates } from '../../../../shared/utils/handle-dates';
 
-export const BaseUserSchemma = new mongoose.Schema<Omit<BaseUser, 'id'>>(
+export const BaseUserSchema = new mongoose.Schema<Omit<BaseUser, 'id'>>(
   {
     name: {
       type: String,
@@ -27,59 +29,15 @@ export const BaseUserSchemma = new mongoose.Schema<Omit<BaseUser, 'id'>>(
       trim: true
     },
     createdAt: {
-      type: Date,
-      default: new Date()
+      type: String,
+      default: HandleDates.newDate()
     },
+    updatedAt: { type: String },
     dateOfBirth: {
-      type: Date
-    },
-    contactInfo: {
-      email: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      phone: {
-        countryCode: {
-          type: String,
-          default: '549',
-          trim: true
-        },
-        area: {
-          type: String,
-          required: true,
-          trim: true
-        },
-        number: {
-          type: String,
-          required: true,
-          trim: true
-        }
-      },
-      address: {
-        type: {
-          street: {
-            type: String,
-            trim: true
-          },
-          city: {
-            type: String,
-            trim: true
-          },
-          province: {
-            type: String,
-            trim: true
-          },
-          country: {
-            type: String,
-            trim: true
-          }
-        }
-      }
+      type: String
     }
   },
   {
-    timestamps: true,
     toJSON: {
       /**
        * Mongoose will transform the returned object
@@ -98,25 +56,28 @@ export const BaseUserSchemma = new mongoose.Schema<Omit<BaseUser, 'id'>>(
   }
 );
 
-export const PatientSchemma = new mongoose.Schema<Omit<Patient, 'id'>>({
+export const PatientSchema = new mongoose.Schema<Omit<Patient, 'id'>>({
+  contactInfo: ContactInfoSchema,
   identificationNumber: {
     type: Number,
     trim: true,
     unique: true,
     required: true
   },
-  medicalHistory: {
-    updatedAt: {
-      type: Date
-    },
-    diagnosis: {
-      type: String,
-      trim: true
-    },
-    writedBy: {
-      type: String
+  medicalHistory: [
+    {
+      updatedAt: {
+        type: Date
+      },
+      diagnosis: {
+        type: String,
+        trim: true
+      },
+      writedBy: {
+        type: String
+      }
     }
-  },
+  ],
   notes: {
     type: String
   },
@@ -129,21 +90,7 @@ export const PatientSchemma = new mongoose.Schema<Omit<Patient, 'id'>>({
       type: String,
       trim: true
     },
-    phone: {
-      countryCode: {
-        type: String,
-        default: '549',
-        trim: true
-      },
-      area: {
-        type: String,
-        trim: true
-      },
-      number: {
-        type: String,
-        trim: true
-      }
-    }
+    contactInfo: ContactInfoSchema
   },
   currentMedications: {
     type: [String]
@@ -167,7 +114,11 @@ export const PatientSchemma = new mongoose.Schema<Omit<Patient, 'id'>>({
   }
 });
 
-const DoctorSchemma = new mongoose.Schema<Omit<Doctor, 'id'>>({
+const DoctorSchema = new mongoose.Schema<Omit<Doctor, 'id'>>({
+  contactInfo: {
+    type: ContactInfoSchema,
+    required: true
+  },
   password: {
     required: true,
     type: String,
@@ -188,16 +139,19 @@ const DoctorSchemma = new mongoose.Schema<Omit<Doctor, 'id'>>({
  * Then it will hash the password previously added
  * and will subscribe this password
  */
-DoctorSchemma.pre('save', async function (done) {
+DoctorSchema.pre('save', async function (done) {
+  this.updatedAt = HandleDates.dateNow();
+
   if (this.isModified('password')) {
     const hashed = await Password.toHash(this.get('password'));
     this.set('password', hashed);
   }
+
   done();
 });
 
-PatientSchemma.add(BaseUserSchemma);
-export const PatientModel = mongoose.model<Omit<Patient, 'id'>>('Patient', PatientSchemma);
+PatientSchema.add(BaseUserSchema);
+export const PatientModel = mongoose.model<Omit<Patient, 'id'>>('Patient', PatientSchema);
 
-DoctorSchemma.add(BaseUserSchemma);
-export const DoctorModel = mongoose.model<Omit<Doctor, 'id'>>('Doctor', DoctorSchemma);
+DoctorSchema.add(BaseUserSchema);
+export const DoctorModel = mongoose.model<Omit<Doctor, 'id'>>('Doctor', DoctorSchema);
