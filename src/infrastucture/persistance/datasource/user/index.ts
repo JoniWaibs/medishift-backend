@@ -4,18 +4,18 @@ import { Patient, Doctor, UserBasicInfo } from '../../../../core/models';
 import { AppError } from '../../../../shared/errors/custom.error';
 import { DoctorModel, PatientModel } from '../../schemas';
 
-export class MongoDBDatasource implements UserDatasource {
+export class MongoDBUserDatasource implements UserDatasource {
   async createDoctor<T extends Doctor>(userData: UserEntity<T>): Promise<UserBasicInfo> {
     try {
       const userCreated = await DoctorModel.create(userData.data);
 
-      return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email };
+      return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email! };
     } catch (error: unknown) {
       throw AppError.internalServer(`User was not created in MongoDDBB - ${error}`);
     }
   }
 
-  async findByDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
+  async findDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
     let user = null;
     try {
       if (id) {
@@ -33,13 +33,13 @@ export class MongoDBDatasource implements UserDatasource {
     try {
       const userCreated = await PatientModel.create(userData.data);
 
-      return { id: userCreated.id, role: userCreated.role, email: userCreated.contactInfo.email };
+      return { id: userCreated.id, role: userCreated.role };
     } catch (error: unknown) {
       throw AppError.internalServer(`Patient was not created in MongoDDBB - ${error}`);
     }
   }
 
-  async findByPatient<T extends Patient>({
+  async findPatient<T extends Patient>({
     identificationNumber,
     id
   }: {
@@ -74,7 +74,7 @@ export class MongoDBDatasource implements UserDatasource {
     try {
       const deletedUser = await PatientModel.findByIdAndDelete(id);
       return !!deletedUser;
-    } catch (error) {
+    } catch (error: unknown) {
       throw AppError.internalServer(`User cannot deleted from MongoDDBB - ${error}`);
     }
   }
@@ -87,8 +87,8 @@ export class MongoDBDatasource implements UserDatasource {
         return null;
       }
 
-      return { id: patientUpdated.id, role: patientUpdated.role, email: patientUpdated.contactInfo.email };
-    } catch (error) {
+      return { id: patientUpdated.id, role: patientUpdated.role };
+    } catch (error: unknown) {
       throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);
     }
   }

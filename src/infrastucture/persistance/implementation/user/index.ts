@@ -7,21 +7,21 @@ export class UserRepositoryImplementation implements UserRepository {
   createDoctor<T extends Doctor>(user: UserEntity<T>): Promise<UserBasicInfo> {
     return this.datasource.createDoctor<T>(user);
   }
-  findByDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
-    return this.datasource.findByDoctor({ id, email });
+  findDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
+    return this.datasource.findDoctor({ id, email });
   }
 
   createPatient<T extends Patient>(userData: UserEntity<T>): Promise<UserBasicInfo> {
     return this.datasource.createPatient<T>(userData);
   }
-  findByPatient<T extends Patient>({
+  findPatient<T extends Patient>({
     identificationNumber,
     id
   }: {
     identificationNumber?: number;
     id?: string;
   }): Promise<T | null> {
-    return this.datasource.findByPatient({ identificationNumber, id });
+    return this.datasource.findPatient({ identificationNumber, id });
   }
   findAllPatients<T extends Patient>(): Promise<T[] | []> {
     return this.datasource.findAllPatients();

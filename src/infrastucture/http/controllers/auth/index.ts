@@ -11,7 +11,7 @@ import { Password } from '../../../../shared/utils/password-hasher';
 export class AuthController {
   constructor(private readonly repository: UserRepository) {}
 
-  public async signUp(req: Request, res: Response, next: NextFunction) {
+  async signUp(req: Request, res: Response, next: NextFunction) {
     const { name, lastName, password, licenseNumber, contactInfo } = req.body;
 
     const user = await new FindUser(this.repository).executeByDoctor<Doctor>({ email: contactInfo.email });
@@ -25,20 +25,23 @@ export class AuthController {
         name,
         lastName,
         role: UserRole.DOCTOR,
-        createdAt: new Date(),
         contactInfo,
         licenseNumber,
         password
       });
 
-      const token = AuthService.generateToken({ id: userCreated.id, email: userCreated.email, role: userCreated.role });
+      const token = AuthService.generateToken({
+        id: userCreated.id,
+        email: userCreated.email!,
+        role: userCreated.role
+      });
 
       res.cookie('session', token, cookieOptions).status(HttpCode.OK).json({
         id: userCreated.id,
         message: `User was created successfully`
       });
-    } catch (error) {
-      next(AppError.badRequest(`Something was wrong - ${error}`));
+    } catch (error: unknown) {
+      next(error);
     }
   }
 
@@ -57,7 +60,7 @@ export class AuthController {
       throw AppError.unauthorized('Password does not match');
     }
 
-    const token = AuthService.generateToken({ id: user.id!, email: user.contactInfo.email, role: user.role });
+    const token = AuthService.generateToken({ id: user.id!, email: user.contactInfo.email!, role: user.role });
 
     res.cookie('session', token, cookieOptions).status(HttpCode.OK).json(user);
   }

@@ -2,7 +2,7 @@ import { UserRole } from '../enums';
 import { ContactInfo, EmergencyContactInfo } from './contact';
 
 interface MedicalHistory {
-  updatedAt: Date;
+  updatedAt: string;
   diagnosis: string;
   writedBy: string;
 }
@@ -14,17 +14,17 @@ interface InsusrerData {
 export interface BaseUser {
   id?: string;
   name: string;
+  lastName: string;
   role: UserRole;
   profilePictureUrl?: string;
-  lastName: string;
-  createdAt: Date;
-  dateOfBirth?: Date;
-  contactInfo: ContactInfo;
+  createdAt?: string;
+  updatedAt?: string;
+  dateOfBirth?: string;
 }
 
 export interface UserBasicInfo {
   id: string;
-  email: string;
+  email?: string;
   role: UserRole;
 }
 
@@ -32,9 +32,11 @@ export interface Doctor extends BaseUser {
   password: string;
   specialization?: string[];
   licenseNumber?: string;
+  contactInfo: ContactInfo;
 }
 
 export interface Patient extends BaseUser {
+  contactInfo?: ContactInfo;
   identificationNumber: number;
   medicalHistory?: MedicalHistory[];
   notes?: string;

@@ -16,13 +16,25 @@ export enum UserRole {
 
 export enum ShiftStatus {
   PENDING = 'pending',
-  COMPLETE = 'complete',
+  COMPLETE = 'completed',
   SUSPENDED = 'suspended',
-  REPROGRAMMED = 'reprogrammed',
-  CANCELLED = 'cancelled'
+  CANCELED = 'canceled'
 }
 
-export enum paymentStatus {
-  DONE = 'done',
-  PENDING = 'pending'
+export enum PaymentStatus {
+  PAID = 'paid',
+  PENDING = 'pending',
+  UNPAID = 'unpaid'
+}
+
+export enum PaymentMethod {
+  CASH = 'cash',
+  TRANSFER = 'transfer',
+  CREDIT_CARD = 'credit_card',
+  DEBIT_CARD = 'debit_card'
+}
+
+export enum CurrencyType {
+  ARS = 'ARS',
+  USD = 'USD'
 }
