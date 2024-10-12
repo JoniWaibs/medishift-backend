@@ -70,9 +70,18 @@ export class AppRoutes {
       RequestAuthMiddleware.handleBasic,
       (req, res, next) => shiftController.create(req, res, next)
     );
-    router.post('/shift/all');
-    router.post('/shift/update/:id');
-    router.post('/shift/:id');
+    router.get('/shift/all', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
+      shiftController.findAllByDate(req, res, next)
+    );
+    router.get('/shift/:id', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
+      shiftController.getById(req, res, next)
+    );
+    router.put(
+      '/shift/update/:id',
+      CurrentUserMiddleware.handleUser,
+      RequestAuthMiddleware.handleBasic,
+      (req, res, next) => shiftController.update(req, res, next)
+    );
 
     //TODO create doctor routes using DoctorController
     //TODO create clinic routes using ClinicController

@@ -6,6 +6,7 @@
 -  compare hash :done
 -  auth endpoints :done
 -  Add validation to create patient :done
--  Add findAndUpdate patients
+-  Add findAndUpdate patients :done
 -  configure vscode debugger
 -  add github actions + precommit
+-  Add validation to prevent inconsistency with dates

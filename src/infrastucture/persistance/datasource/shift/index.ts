@@ -1,6 +1,6 @@
 import { ShiftDataSource } from '../../../../application/datasources/shift';
 import { ShiftEntity } from '../../../../core/entities/shift';
-import { ShitfBasicInfo } from '../../../../core/models';
+import { Shift, ShitfBasicInfo } from '../../../../core/models';
 import { AppError } from '../../../../shared/errors/custom.error';
 import { ShiftModel } from '../../schemas/shift';
 
@@ -28,6 +28,59 @@ export class MongoDBShiftDataSource implements ShiftDataSource {
       return { id: shiftCreated.id, doctorId: shiftCreated.doctorId, patientId: shiftCreated.id };
     } catch (error: unknown) {
       throw AppError.internalServer(`Shift was not created in MongoDDBB - ${error}`);
+    }
+  }
+
+  async findAllByDate({
+    startDate,
+    endDate,
+    doctorId,
+    patientId
+  }: {
+    startDate: string;
+    endDate: string;
+    doctorId: string;
+    patientId: string;
+  }): Promise<Shift[] | []> {
+    console.log(endDate);
+
+    try {
+      const shifts = await ShiftModel.find({
+        ...(doctorId && { doctorId }),
+        ...(patientId && { patientId }),
+        date: {
+          $gte: startDate,
+          $lte: endDate
+        }
+      });
+
+      return shifts || [];
+    } catch (error) {
+      throw AppError.internalServer(`Shift was not founded in MongoDDBB - ${error}`);
+    }
+  }
+
+  async findShift(id: string): Promise<Shift | null> {
+    try {
+      const shift = await ShiftModel.findById(id);
+
+      return shift;
+    } catch (error) {
+      throw AppError.internalServer(`Shift was not founded in MongoDDBB - ${error}`);
+    }
+  }
+
+  async updateShift({ id, shift }: { id: string; shift: Shift }): Promise<ShitfBasicInfo | null> {
+    try {
+      const patientUpdated = await ShiftModel.findByIdAndUpdate(id, shift, { returnDocument: 'after' });
+
+      if (!patientUpdated) {
+        return null;
+      }
+
+      return { id: patientUpdated.id, patientId: patientUpdated.patientId, doctorId: patientUpdated.doctorId };
+    } catch (error: unknown) {
+      throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);
     }
   }
 }
