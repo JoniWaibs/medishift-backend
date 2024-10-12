@@ -16,7 +16,7 @@ export enum UserRole {
 
 export enum ShiftStatus {
   PENDING = 'pending',
-  COMPLETE = 'completed',
+  FINISHED = 'finished',
   SUSPENDED = 'suspended',
   CANCELED = 'canceled'
 }
