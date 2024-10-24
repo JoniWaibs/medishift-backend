@@ -8,7 +8,7 @@ export const validate = (validations: ContextRunner[]) => {
     for (const validation of validations) {
       const result = await validation.run(req);
       if (!result.isEmpty()) {
-        next(AppError.badRequest(`Error with validators - ${JSON.stringify(result)}`));
+        next(AppError.badRequest(JSON.stringify(result)));
       }
     }
     next();
