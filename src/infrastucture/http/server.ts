@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { HttpCode } from '../../core/enums';
 import { AppError } from '../../shared/errors/custom.error';
 import { ErrorMiddleware } from './middlewares/error';
+import cors from 'cors'
 import 'express-async-errors';
 
 interface ServerOptions {
@@ -36,17 +37,18 @@ export class Server {
     this.app.use(cookieParser());
 
     // CORS
-    this.app.use((req, res, next) => {
-      const allowedOrigins = ['http://localhost:3000'];
-      const origin = req.headers.origin;
-      if (allowedOrigins.includes(origin!)) {
-        res.setHeader('Access-Control-Allow-Origin', origin!);
+    this.app.use(cors({
+      credentials: true,
+      origin: (origin, callback) => {
+        const allowedOrigins = ['http://localhost:3000'];
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
       }
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      next();
-    });
-
+    }));
+    
     // Routes
     this.app.use(this.#apiPrefix, this.#routes);
 
@@ -73,3 +75,5 @@ export class Server {
     this.#serverListener?.close();
   }
 }
+
+

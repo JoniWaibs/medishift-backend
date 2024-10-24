@@ -29,7 +29,7 @@ export class AppRoutes {
     router.get('/auth/current-user', CurrentUserMiddleware.handleUser, (req, res) =>
       authController.currentUser(req, res)
     );
-    router.get('/auth/sign-in', validate(Validator.signIn), (req, res) => authController.signIn(req, res));
+    router.post('/auth/sign-in', validate(Validator.signIn), (req, res) => authController.signIn(req, res));
     router.post('/auth/sign-out', (req, res) => authController.signOut(req, res));
 
     // User routes
@@ -63,7 +63,7 @@ export class AppRoutes {
       (req, res, next) => patientController.delete(req, res, next)
     );
 
-    //medical shift routes
+    //Medical shift routes
     router.post(
       '/shift/create',
       CurrentUserMiddleware.handleUser,
