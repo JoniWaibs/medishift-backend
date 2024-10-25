@@ -42,8 +42,14 @@ export class MongoDBShiftDataSource implements ShiftDataSource {
     doctorId: string;
     patientId: string;
   }): Promise<Shift[] | []> {
-    console.log(endDate);
+    const today = new Date(); 
 
+    const start = startDate ? new Date(startDate) : today;
+    const end = endDate ? new Date(endDate) : today;
+  
+    start.setHours(0, 0, 0, 0); 
+    end.setHours(23, 59, 59, 999); 
+      
     try {
       const shifts = await ShiftModel.find({
         ...(doctorId && { doctorId }),
@@ -53,7 +59,7 @@ export class MongoDBShiftDataSource implements ShiftDataSource {
           $lte: endDate
         }
       });
-
+            
       return shifts || [];
     } catch (error) {
       throw AppError.internalServer(`Shift was not founded in MongoDDBB - ${error}`);
