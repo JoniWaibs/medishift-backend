@@ -10,3 +10,7 @@
 -  configure vscode debugger
 -  add github actions + precommit
 -  Add validation to prevent inconsistency with dates
+-  Notification system
+-  repetitive schedules by days, weeks, months
+-  add logger service
+-  Merge logic with patients and doctors using user entity, and implements search logic
