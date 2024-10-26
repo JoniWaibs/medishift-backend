@@ -30,11 +30,8 @@ export class UserRouter {
       (req, res, next) => patientController.getById(req, res, next)
     );
     // Search patient by id or identification number or name or email, lastname or any combination of these
-    router.get(
-      '/user/patient',
-      CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleBasic,
-      (req, res, next) => patientController.search(req, res, next)
+    router.get('/user/patient', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
+      patientController.search(req, res, next)
     );
     router.get('/user/patient/all', CurrentUserMiddleware.handleUser, (req, res, next) =>
       patientController.getAll(req, res, next)
