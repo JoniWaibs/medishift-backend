@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { UserDatasource } from '../../../../application/datasources';
 import { UserEntity } from '../../../../core/entities/user';
 import { Patient, Doctor, UserBasicInfo } from '../../../../core/models';
@@ -90,6 +91,24 @@ export class MongoDBUserDatasource implements UserDatasource {
       return { id: patientUpdated.id, role: patientUpdated.role };
     } catch (error: unknown) {
       throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);
+    }
+  }
+
+  async search<T extends Patient>({ searchData }: { searchData: string }): Promise<T[] | []> {
+    const query = {
+      $or: [
+        { _id: new mongoose.Types.ObjectId(searchData).toString() },
+        { name: searchData.toLowerCase().trim() },
+        { lastName: searchData.toLowerCase().trim() },
+        { identificationNumber: searchData.trim() }
+      ]
+    };
+
+    try {
+      const patients = await PatientModel.find(query);
+      return patients as unknown as T[];
+    } catch (error: unknown) {
+      throw AppError.internalServer(`Users was not founded in MongoDDBB - ${error}`);
     }
   }
 }

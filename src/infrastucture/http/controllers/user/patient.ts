@@ -22,7 +22,7 @@ export class PatientController {
 
     try {
       const patientCreated = await new CreateUser(this.repository).executeByPatient<Patient>({
-        identificationNumber: Number(identificationNumber),
+        identificationNumber,
         name,
         lastName,
         role: UserRole.PATIENT,
@@ -50,6 +50,25 @@ export class PatientController {
     try {
       const patientId = new mongoose.Types.ObjectId(id).toString();
       const patient = await new FindUser(this.repository).executeByPatient<Patient>({ id: patientId });
+
+      if (!patient) {
+        throw AppError.notFound('Patient does not exists');
+      }
+
+      res.status(HttpCode.OK).json(patient);
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+
+  async search(req: Request, res: Response, next: NextFunction) {
+    const { search } = req.query;
+    if (!search) {
+      throw AppError.notFound('Missing data to search');
+    }
+
+    try {
+      const patient = await this.repository.search({ searchData: String(search) });
 
       if (!patient) {
         throw AppError.notFound('Patient does not exists');

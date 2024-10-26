@@ -22,4 +22,5 @@ export abstract class UserRepository {
     id: string;
     userData: T;
   }): Promise<UserBasicInfo | null>;
+  abstract search<T extends Patient>({ searchData }: { searchData: string }): Promise<T[] | []>;
 }

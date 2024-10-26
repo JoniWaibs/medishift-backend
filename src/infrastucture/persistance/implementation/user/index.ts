@@ -32,4 +32,8 @@ export class UserRepositoryImplementation implements UserRepository {
   updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null> {
     return this.datasource.updatePatient({ id, userData });
   }
+
+  search<T extends Patient>({ searchData }: { searchData: string }): Promise<T[] | []> {
+    return this.datasource.search({ searchData });
+  }
 }
