@@ -1,15 +1,8 @@
-import { Doctor, Patient } from '../../../core/models';
+import { Doctor } from '../../../core/models';
 import { UserRepository } from '../../repository';
 
 export interface FindUserUseCase {
   executeByDoctor: <T extends Doctor>({ id, email }: { id?: string; email?: string }) => Promise<T | null>;
-  executeByPatient: <T extends Patient>({
-    identificationNumber,
-    id
-  }: {
-    identificationNumber?: number;
-    id?: string;
-  }) => Promise<T | null>;
 }
 
 export class FindUser implements FindUserUseCase {
@@ -17,15 +10,5 @@ export class FindUser implements FindUserUseCase {
 
   async executeByDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null> {
     return await this.repository.findDoctor({ id, email });
-  }
-
-  async executeByPatient<T extends Patient>({
-    identificationNumber,
-    id
-  }: {
-    identificationNumber?: number;
-    id?: string;
-  }): Promise<T | null> {
-    return await this.repository.findPatient({ identificationNumber, id });
   }
 }

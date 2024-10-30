@@ -8,13 +8,7 @@ export interface UpdateUserUseCase {
 export class UpdateUser implements UpdateUserUseCase {
   constructor(private readonly repository: UserRepository) {}
 
-  async executeByPatient<T extends Patient>({
-    id,
-    userData
-  }: {
-    id: string;
-    userData: T;
-  }): Promise<UserBasicInfo | null> {
+  async executeByPatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null> {
     return await this.repository.updatePatient({ id, userData });
   }
 }

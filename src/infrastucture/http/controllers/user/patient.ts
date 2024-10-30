@@ -2,7 +2,7 @@ import { type NextFunction, type Request, type Response } from 'express';
 import { UserRepository } from '../../../../application/repository';
 import { Patient } from '../../../../core/models';
 import { AppError } from '../../../../shared/errors/custom.error';
-import { CreateUser, FindUser } from '../../../../application/use-cases';
+import { CreateUser } from '../../../../application/use-cases';
 import { HttpCode, UserRole } from '../../../../core/enums';
 import { UpdateUser } from '../../../../application/use-cases/user/update-user';
 import mongoose from 'mongoose';
@@ -14,9 +14,11 @@ export class PatientController {
     const { name, lastName, contactInfo, insurerData, identificationNumber } = req.body;
     const { id } = req.user!;
 
-    const patient = await new FindUser(this.repository).executeByPatient<Patient>({ identificationNumber });
+    const patients = await this.repository.search({
+      ...(identificationNumber && { search: String(identificationNumber) }),
+    });
 
-    if (patient) {
+    if (patients.length > 0) {
       throw AppError.conflict('Patient already exists');
     }
 
@@ -41,50 +43,20 @@ export class PatientController {
     }
   }
 
-  async getById(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
-    if (!id) {
-      throw AppError.notFound('Missing patient id');
-    }
-
-    try {
-      const patientId = new mongoose.Types.ObjectId(id).toString();
-      const patient = await new FindUser(this.repository).executeByPatient<Patient>({ id: patientId });
-
-      if (!patient) {
-        throw AppError.notFound('Patient does not exists');
-      }
-
-      res.status(HttpCode.OK).json(patient);
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-
   async search(req: Request, res: Response, next: NextFunction) {
-    const { search } = req.query;
-    if (!search) {
-      throw AppError.notFound('Missing data to search');
-    }
+    const { search, id } = req.query;
 
     try {
-      const patient = await this.repository.search({ searchData: String(search) });
+      const patient = await this.repository.search({
+        ...(search && { search: String(search) }),
+        ...(id && { id: new mongoose.Types.ObjectId(String(id)).toString() })
+      });
 
       if (!patient) {
         throw AppError.notFound('Patient does not exists');
       }
 
       res.status(HttpCode.OK).json(patient);
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-
-  async getAll(_req: Request, res: Response, next: NextFunction) {
-    try {
-      const patients = await this.repository.findAllPatients();
-
-      res.status(HttpCode.OK).json({ patients });
     } catch (error: unknown) {
       next(error);
     }
@@ -92,11 +64,13 @@ export class PatientController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
+
     if (!id) {
       throw AppError.notFound('Missing patient id');
     }
+
     const patientId = new mongoose.Types.ObjectId(id).toString();
-    const patient = await new FindUser(this.repository).executeByPatient<Patient>({ id: patientId });
+    const patient = await this.repository.search({ id: patientId });
 
     if (!patient) {
       throw AppError.notFound('Patient does not exists');

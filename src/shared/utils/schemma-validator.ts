@@ -41,12 +41,7 @@ export class Validator {
       body('notes').optional().isString().trim(),
       body('emergencyContact.name').optional().isString().toLowerCase().trim(),
       body('emergencyContact.relation').optional().toLowerCase().isString().trim(),
-      body('emergencyContact.contactInfo.email')
-        .optional()
-        .isEmail()
-        .toLowerCase()
-        .withMessage('Email must be valid')
-        .trim(),
+      body('emergencyContact.contactInfo.email').optional().isEmail().toLowerCase().withMessage('Email must be valid').trim(),
       body('emergencyContact.contactInfo.phone.area').optional().isString().trim(),
       body('emergencyContact.contactInfo.phone.number').optional().isString().trim(),
       body('emergencyContact.contactInfo.address.street').optional().toLowerCase().isString().trim(),

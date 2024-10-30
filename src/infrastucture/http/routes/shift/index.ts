@@ -13,11 +13,8 @@ export class ShiftRouter {
     const shiftImplementation = new ShiftRepositoryImplementation(mongoShiftDataSource);
     const shiftController = new ShiftController(shiftImplementation);
 
-    router.post(
-      '/shift/create',
-      CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleBasic,
-      (req, res, next) => shiftController.create(req, res, next)
+    router.post('/shift/create', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
+      shiftController.create(req, res, next)
     );
     router.get('/shift/all', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
       shiftController.findAllByDate(req, res, next)
@@ -25,11 +22,8 @@ export class ShiftRouter {
     router.get('/shift/:id', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
       shiftController.getById(req, res, next)
     );
-    router.put(
-      '/shift/update/:id',
-      CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleBasic,
-      (req, res, next) => shiftController.update(req, res, next)
+    router.put('/shift/update/:id', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
+      shiftController.update(req, res, next)
     );
 
     return router;

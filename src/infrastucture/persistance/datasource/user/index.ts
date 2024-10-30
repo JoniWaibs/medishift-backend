@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { UserDatasource } from '../../../../application/datasources';
 import { UserEntity } from '../../../../core/entities/user';
 import { Patient, Doctor, UserBasicInfo } from '../../../../core/models';
@@ -40,31 +39,21 @@ export class MongoDBUserDatasource implements UserDatasource {
     }
   }
 
-  async findPatient<T extends Patient>({
-    identificationNumber,
-    id
-  }: {
-    identificationNumber?: number;
-    id?: string;
-  }): Promise<T | null> {
-    let patient = null;
+  async search<T extends Patient>({ search, id }: { search?: string; id?: string }): Promise<T[] | []> {
+    const query = {
+      ...(id && { _id: id }),
+      ...(search && {
+        $or: [
+          { name: new RegExp(search.toLowerCase().trim(), 'i') },
+          { lastName: new RegExp(search.toLowerCase().trim(), 'i') },
+          { identificationNumber: new RegExp(search.toLowerCase().trim(), 'i') }
+        ]
+      })
+    };
 
     try {
-      if (id) {
-        patient = await PatientModel.findById(id);
-      } else if (identificationNumber) {
-        patient = await PatientModel.findOne({ identificationNumber: identificationNumber });
-      }
+      const patients = await PatientModel.find(query);
 
-      return patient as unknown as T;
-    } catch (error: unknown) {
-      throw AppError.internalServer(`User was not founded in MongoDDBB - ${error}`);
-    }
-  }
-
-  async findAllPatients<T extends Patient>(): Promise<T[] | []> {
-    try {
-      const patients = await PatientModel.find({});
       return patients as unknown as T[];
     } catch (error: unknown) {
       throw AppError.internalServer(`Users was not founded in MongoDDBB - ${error}`);
@@ -91,24 +80,6 @@ export class MongoDBUserDatasource implements UserDatasource {
       return { id: patientUpdated.id, role: patientUpdated.role };
     } catch (error: unknown) {
       throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);
-    }
-  }
-
-  async search<T extends Patient>({ searchData }: { searchData: string }): Promise<T[] | []> {
-    const query = {
-      $or: [
-        { _id: new mongoose.Types.ObjectId(searchData).toString() },
-        { name: searchData.toLowerCase().trim() },
-        { lastName: searchData.toLowerCase().trim() },
-        { identificationNumber: searchData.trim() }
-      ]
-    };
-
-    try {
-      const patients = await PatientModel.find(query);
-      return patients as unknown as T[];
-    } catch (error: unknown) {
-      throw AppError.internalServer(`Users was not founded in MongoDDBB - ${error}`);
     }
   }
 }
