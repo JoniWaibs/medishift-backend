@@ -15,9 +15,7 @@ export class AuthRouter {
     const authController = new AuthController(userImplementation);
 
     router.post('/auth/sign-up', validate(Validator.signUp), (req, res, next) => authController.signUp(req, res, next));
-    router.get('/auth/current-user', CurrentUserMiddleware.handleUser, (req, res) =>
-      authController.currentUser(req, res)
-    );
+    router.get('/auth/current-user', CurrentUserMiddleware.handleUser, (req, res) => authController.currentUser(req, res));
     router.post('/auth/sign-in', validate(Validator.signIn), (req, res) => authController.signIn(req, res));
     router.post('/auth/sign-out', (req, res) => authController.signOut(req, res));
 

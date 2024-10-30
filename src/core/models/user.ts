@@ -37,7 +37,7 @@ export interface Doctor extends BaseUser {
 
 export interface Patient extends BaseUser {
   contactInfo?: ContactInfo;
-  identificationNumber: number;
+  identificationNumber: string;
   medicalHistory?: MedicalHistory[];
   notes?: string;
   emergencyContact?: EmergencyContactInfo;

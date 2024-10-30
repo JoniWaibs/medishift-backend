@@ -39,31 +39,21 @@ export class MongoDBUserDatasource implements UserDatasource {
     }
   }
 
-  async findPatient<T extends Patient>({
-    identificationNumber,
-    id
-  }: {
-    identificationNumber?: number;
-    id?: string;
-  }): Promise<T | null> {
-    let patient = null;
+  async search<T extends Patient>({ search, id }: { search?: string; id?: string }): Promise<T[] | []> {
+    const query = {
+      ...(id && { _id: id }),
+      ...(search && {
+        $or: [
+          { name: new RegExp(search.toLowerCase().trim(), 'i') },
+          { lastName: new RegExp(search.toLowerCase().trim(), 'i') },
+          { identificationNumber: new RegExp(search.toLowerCase().trim(), 'i') }
+        ]
+      })
+    };
 
     try {
-      if (id) {
-        patient = await PatientModel.findById(id);
-      } else if (identificationNumber) {
-        patient = await PatientModel.findOne({ identificationNumber: identificationNumber });
-      }
+      const patients = await PatientModel.find(query);
 
-      return patient as unknown as T;
-    } catch (error: unknown) {
-      throw AppError.internalServer(`User was not founded in MongoDDBB - ${error}`);
-    }
-  }
-
-  async findAllPatients<T extends Patient>(): Promise<T[] | []> {
-    try {
-      const patients = await PatientModel.find({});
       return patients as unknown as T[];
     } catch (error: unknown) {
       throw AppError.internalServer(`Users was not founded in MongoDDBB - ${error}`);

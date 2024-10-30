@@ -6,20 +6,7 @@ export abstract class UserRepository {
   abstract findDoctor<T extends Doctor>({ id, email }: { id?: string; email?: string }): Promise<T | null>;
 
   abstract createPatient<T extends Patient>(userData: UserEntity<T>): Promise<UserBasicInfo>;
-  abstract findPatient<T extends Patient>({
-    identificationNumber,
-    id
-  }: {
-    identificationNumber?: number;
-    id?: string;
-  }): Promise<T | null>;
-  abstract findAllPatients<T extends Patient>(): Promise<T[] | []>;
+  abstract search<T extends Patient>({ search, id }: { search?: string; id?: string }): Promise<T[] | []>;
   abstract deletePatient(id: string): Promise<boolean>;
-  abstract updatePatient<T extends Patient>({
-    id,
-    userData
-  }: {
-    id: string;
-    userData: T;
-  }): Promise<UserBasicInfo | null>;
+  abstract updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null>;
 }

@@ -59,7 +59,7 @@ export const BaseUserSchema = new mongoose.Schema<Omit<BaseUser, 'id'>>(
 export const PatientSchema = new mongoose.Schema<Omit<Patient, 'id'>>({
   contactInfo: ContactInfoSchema,
   identificationNumber: {
-    type: Number,
+    type: String,
     trim: true,
     unique: true,
     required: true

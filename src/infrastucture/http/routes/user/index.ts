@@ -23,15 +23,12 @@ export class UserRouter {
       RequestAuthMiddleware.handleBasic,
       (req, res, next) => patientController.create(req, res, next)
     );
-    router.get(
-      '/user/patient/profile/:id',
-      CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleBasic,
-      (req, res, next) => patientController.getById(req, res, next)
+
+    // Search patient by id or identification number or name or email, lastname or any combination of these
+    router.get('/user/patient', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
+      patientController.search(req, res, next)
     );
-    router.get('/user/patient/all', CurrentUserMiddleware.handleUser, (req, res, next) =>
-      patientController.getAll(req, res, next)
-    );
+
     router.put(
       '/user/patient/update/:id',
       validate(Validator.patient),
@@ -39,11 +36,9 @@ export class UserRouter {
       RequestAuthMiddleware.handleBasic,
       (req, res, next) => patientController.update(req, res, next)
     );
-    router.delete(
-      '/user/patient/delete/:id',
-      CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleBasic,
-      (req, res, next) => patientController.delete(req, res, next)
+    
+    router.delete('/user/patient/delete/:id', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
+      patientController.delete(req, res, next)
     );
 
     return router;
