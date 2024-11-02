@@ -10,26 +10,20 @@ export class ShiftRouter {
     const router = Router();
 
     const mongoShiftDataSource = new MongoDBShiftDataSource();
-    const shiftImplementation = new ShiftRepositoryImplementation(mongoShiftDataSource);
-    const shiftController = new ShiftController(shiftImplementation);
+    const implementation = new ShiftRepositoryImplementation(mongoShiftDataSource);
+    const controller = new ShiftController(implementation);
 
-    router.post('/shift/create', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
-      shiftController.create(req, res, next)
-    );
+    router.use(CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic);
 
-    router.get('/shift', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
-      shiftController.search(req, res, next)
-    );
+    const routeDefinitions = [
+      { path: '/shift/create', method: router.get, handler: controller.create },
+      { path: '/shift', method: router.get, handler: controller.search },
+      { path: '/shift/update/:id', method: router.put, handler: controller.update },
+    ];
     
-    router.get('/shift/all', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
-      shiftController.findAllByDate(req, res, next)
-    );
-    router.get('/shift/:id', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
-      shiftController.getById(req, res, next)
-    );
-    router.put('/shift/update/:id', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
-      shiftController.update(req, res, next)
-    );
+    routeDefinitions.forEach(({ path, method, handler }) => {
+      method.bind(router)(path, handler.bind(controller));
+    });
 
     return router;
   }

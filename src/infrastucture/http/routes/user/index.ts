@@ -12,34 +12,21 @@ export class UserRouter {
     const router = Router();
 
     const mongoUserDataSource = new MongoDBUserDatasource();
-    const userImplementation = new UserRepositoryImplementation(mongoUserDataSource);
-    const patientController = new PatientController(userImplementation);
+    const implementation = new UserRepositoryImplementation(mongoUserDataSource);
+    const controller = new PatientController(implementation);
 
-    // User routes
-    router.post(
-      '/user/patient/create',
-      validate(Validator.patient),
-      CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleBasic,
-      (req, res, next) => patientController.create(req, res, next)
-    );
+    router.use(CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic);
 
-    // Search patient by id or identification number or name or email, lastname or any combination of these
-    router.get('/user/patient', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
-      patientController.search(req, res, next)
-    );
+    const routeDefinitions = [
+      { path: '/user/patient/create', method: router.post, middlewares: [validate(Validator.patient)], handler: controller.create },
+      { path: '/user/patient', method: router.get, handler: controller.search },
+      { path: '/user/patient/update/:id', method: router.put, middlewares: [validate(Validator.patient)], handler: controller.update },
+      { path: '/user/patient/delete/:id', method: router.delete, handler: controller.delete },
+    ];
 
-    router.put(
-      '/user/patient/update/:id',
-      validate(Validator.patient),
-      CurrentUserMiddleware.handleUser,
-      RequestAuthMiddleware.handleBasic,
-      (req, res, next) => patientController.update(req, res, next)
-    );
-    
-    router.delete('/user/patient/delete/:id', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
-      patientController.delete(req, res, next)
-    );
+    routeDefinitions.forEach(({ path, method, middlewares = [], handler }) => {
+      method.bind(router)(path, ...middlewares, handler.bind(controller));
+    });
 
     return router;
   }
