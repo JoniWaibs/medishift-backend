@@ -10,6 +10,7 @@ import { validate } from '../../middlewares/validator';
 export class UserRouter {
   static get routes(): Router {
     const router = Router();
+    const basePath: string = '/user/patient';
 
     const mongoUserDataSource = new MongoDBUserDatasource();
     const implementation = new UserRepositoryImplementation(mongoUserDataSource);
@@ -18,10 +19,10 @@ export class UserRouter {
     router.use(CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic);
 
     const routeDefinitions = [
-      { path: '/user/patient/create', method: router.post, middlewares: [validate(Validator.patient)], handler: controller.create },
-      { path: '/user/patient', method: router.get, handler: controller.search },
-      { path: '/user/patient/update/:id', method: router.put, middlewares: [validate(Validator.patient)], handler: controller.update },
-      { path: '/user/patient/delete/:id', method: router.delete, handler: controller.delete },
+      { path: `${basePath}/create`, method: router.post, middlewares: [validate(Validator.patient)], handler: controller.create },
+      { path: `${basePath}`, method: router.get, handler: controller.search },
+      { path: `${basePath}/update/:id`, method: router.put, middlewares: [validate(Validator.patient)], handler: controller.update },
+      { path: `${basePath}/delete/:id`, method: router.delete, handler: controller.delete }
     ];
 
     routeDefinitions.forEach(({ path, method, middlewares = [], handler }) => {
