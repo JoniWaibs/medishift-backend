@@ -7,12 +7,16 @@ export class AppRoutes {
   static get routes(): Router {
     const router = Router();
 
-    router.use(AuthRouter.routes);
-    router.use(UserRouter.routes);
-    router.use(ShiftRouter.routes);
+    const routeModules = [
+      AuthRouter.routes,
+      UserRouter.routes,
+      ShiftRouter.routes
+      // DoctorRouter.routes, // Add this line once DoctorRouter is implemented
+      // ClinicRouter.routes, // Add this line once ClinicRouter is implemented
+    ];
 
-    //TODO create doctor routes using DoctorController
-    //TODO create clinic routes using ClinicController
+    // Register each route module
+    routeModules.forEach((route) => router.use(route));
 
     return router;
   }

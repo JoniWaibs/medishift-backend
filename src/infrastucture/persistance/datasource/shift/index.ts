@@ -1,6 +1,7 @@
 import { ShiftDataSource } from '../../../../application/datasources/shift';
 import { ShiftEntity } from '../../../../core/entities/shift';
 import { Shift, ShitfBasicInfo } from '../../../../core/models';
+import { SearchShiftData } from '../../../../core/models/misc';
 import { AppError } from '../../../../shared/errors/custom.error';
 import { ShiftModel } from '../../schemas/shift';
 
@@ -10,11 +11,11 @@ export class MongoDBShiftDataSource implements ShiftDataSource {
 
     const overlappingShifts = await ShiftModel.find({
       doctorId: doctorId,
-      date: { $eq: date }, // Same date as the new shift
+      date: { $eq: date },
       $and: [
         {
-          startTime: { $lt: endTime }, // Existing shift starts before new shift ends
-          endTime: { $gt: startTime } // Existing shift ends after new shift starts
+          startTime: { $lt: endTime },
+          endTime: { $gt: startTime }
         }
       ]
     });
@@ -31,47 +32,27 @@ export class MongoDBShiftDataSource implements ShiftDataSource {
     }
   }
 
-  async findAllByDate({
-    startDate,
-    endDate,
-    doctorId,
-    patientId
-  }: {
-    startDate: string;
-    endDate: string;
-    doctorId: string;
-    patientId: string;
-  }): Promise<Shift[] | []> {
-    const today = new Date();
+  async search(searchData: SearchShiftData): Promise<Shift[] | []> {
+    const { doctorId, patientId, startDate, endDate, id } = searchData;
+    const isQueryByDate = startDate && endDate;
 
-    const start = startDate ? new Date(startDate) : today;
-    const end = endDate ? new Date(endDate) : today;
-
-    start.setHours(0, 0, 0, 0);
-    end.setHours(23, 59, 59, 999);
-
-    try {
-      const shifts = await ShiftModel.find({
-        ...(doctorId && { doctorId }),
-        ...(patientId && { patientId }),
+    const query = {
+      doctorId,
+      ...(patientId && { patientId }),
+      ...(id && { _id: id }),
+      ...(isQueryByDate && {
         date: {
           $gte: startDate,
           $lte: endDate
         }
-      });
+      })
+    };
+
+    try {
+      const shifts = await ShiftModel.find(query);
 
       return shifts || [];
-    } catch (error) {
-      throw AppError.internalServer(`Shift was not founded in MongoDDBB - ${error}`);
-    }
-  }
-
-  async findShift(id: string): Promise<Shift | null> {
-    try {
-      const shift = await ShiftModel.findById(id);
-
-      return shift;
-    } catch (error) {
+    } catch (error: unknown) {
       throw AppError.internalServer(`Shift was not founded in MongoDDBB - ${error}`);
     }
   }

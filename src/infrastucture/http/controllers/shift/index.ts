@@ -36,45 +36,21 @@ export class ShiftController {
     }
   }
 
-  async findAllByDate(req: Request, res: Response, next: NextFunction) {
+  async search(req: Request, res: Response, next: NextFunction) {
     const { id: doctorId } = req.user!;
-    const { id: patientId } = req.params;
-    const { startDate, endDate } = req.query;
+    const { id, startDate, endDate, patientId } = req.query;
 
-    if (!startDate || !endDate) {
-      throw AppError.notFound(`Missing startDate or endDate`);
-    }
-
-    const isQueryByPatient = patientId;
+    const isQueryByPatient = !!patientId;
 
     try {
-      const shifts = await this.repository.findAllByDate({
-        startDate: startDate as string,
-        endDate: endDate as string,
-        ...(isQueryByPatient ? { patientId } : { doctorId })
+      const shifts = await this.repository.search({
+        ...(id && { id: new mongoose.Types.ObjectId(String(id)).toString() }),
+        ...(startDate && { startDate: String(startDate) }),
+        ...(endDate && { endDate: String(endDate) }),
+        ...(isQueryByPatient ? { patientId: String(patientId) } : { doctorId })
       });
 
-      res.status(HttpCode.OK).json({ shifts });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async getById(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
-    if (!id) {
-      throw AppError.notFound('Missing shift id');
-    }
-
-    try {
-      const shiftId = new mongoose.Types.ObjectId(id).toString();
-      const shift = await this.repository.findShift(shiftId);
-
-      if (!shift) {
-        throw AppError.notFound('Shift does not exists');
-      }
-
-      res.status(HttpCode.OK).json(shift);
+      res.status(HttpCode.OK).json(shifts);
     } catch (error: unknown) {
       next(error);
     }
@@ -87,10 +63,12 @@ export class ShiftController {
     }
 
     const shiftId = new mongoose.Types.ObjectId(id).toString();
-    const shift = await this.repository.findShift(shiftId);
+    const shift = await this.repository.search({ id: shiftId });
+
     if (!shift) {
       throw AppError.notFound('Shift does not exists');
     }
+
     const newShiftData = req.body;
 
     try {

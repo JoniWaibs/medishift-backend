@@ -15,7 +15,7 @@ export class PatientController {
     const { id } = req.user!;
 
     const patients = await this.repository.search({
-      ...(identificationNumber && { search: String(identificationNumber) }),
+      ...(identificationNumber && { search: String(identificationNumber) })
     });
 
     if (patients.length > 0) {
