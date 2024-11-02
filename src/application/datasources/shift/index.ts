@@ -16,4 +16,17 @@ export abstract class ShiftDataSource {
   }): Promise<Shift[] | []>;
   abstract findShift(id: string): Promise<Shift | null>;
   abstract updateShift({ id, shift }: { id: string; shift: Shift }): Promise<ShitfBasicInfo | null>;
+  abstract search({
+    id,  
+    startDate,
+    endDate,
+    doctorId,
+    patientId,
+  }: {
+    id?: string;
+    startDate?: string;
+    endDate?: string;
+    doctorId?: string;
+    patientId?: string;
+  }): Promise<Shift[] | []>;
 }

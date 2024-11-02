@@ -80,6 +80,11 @@ export class ShiftController {
     }
   }
 
+  async search(req: Request, _res: Response, _next: NextFunction) {
+    const { id } = req.params;
+    console.log(id);
+  }
+
   async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     if (!id) {

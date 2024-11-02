@@ -16,6 +16,11 @@ export class ShiftRouter {
     router.post('/shift/create', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
       shiftController.create(req, res, next)
     );
+
+    router.get('/shift', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
+      shiftController.search(req, res, next)
+    );
+    
     router.get('/shift/all', CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic, (req, res, next) =>
       shiftController.findAllByDate(req, res, next)
     );
