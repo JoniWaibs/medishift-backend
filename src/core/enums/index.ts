@@ -31,7 +31,8 @@ export enum PaymentMethod {
   CASH = 'cash',
   TRANSFER = 'transfer',
   CREDIT_CARD = 'credit_card',
-  DEBIT_CARD = 'debit_card'
+  DEBIT_CARD = 'debit_card',
+  UNKNOWN = 'unknown'
 }
 
 export enum CurrencyType {
