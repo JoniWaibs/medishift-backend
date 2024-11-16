@@ -4,9 +4,9 @@ import { CreateUser, FindUser } from '../../../../application/use-cases';
 import { Doctor } from '../../../../core/models';
 import { HttpCode, UserRole } from '../../../../core/enums';
 import { AppError } from '../../../../shared/errors/custom.error';
-import { AuthService } from '../../../services/AuthService';
+import { AuthService } from '../../../services/auth-service';
 import { cookieOptions } from '../../../../config/cookie';
-import { Password } from '../../../../shared/utils/password-hasher';
+import { Password } from '../../../../shared/adapters/password-hasher';
 
 export class AuthController {
   constructor(private readonly repository: UserRepository) {}

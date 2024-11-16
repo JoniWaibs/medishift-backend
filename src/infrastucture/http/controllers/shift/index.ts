@@ -3,7 +3,7 @@ import { type NextFunction, type Request, type Response } from 'express';
 import { HttpCode } from '../../../../core/enums';
 import { ShiftRepository } from '../../../../application/repository/shift';
 import { CreateShift } from '../../../../application/use-cases/shift/create-shit';
-import { HandleDates } from '../../../../shared/utils/handle-dates';
+import { HandleDates } from '../../../../shared/adapters/handle-dates';
 import { format } from 'date-fns';
 import { AppError } from '../../../../shared/errors/custom.error';
 import mongoose from 'mongoose';

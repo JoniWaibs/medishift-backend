@@ -1,5 +1,5 @@
 import { type Response, type NextFunction, type Request } from 'express';
-import { AuthService } from '../../services/AuthService';
+import { AuthService } from '../../services/auth-service';
 import { AppError } from '../../../shared/errors/custom.error';
 import { UserBasicInfo } from '../../../core/models';
 

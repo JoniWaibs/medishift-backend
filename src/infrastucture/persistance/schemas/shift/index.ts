@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { Payment, Shift } from '../../../../core/models';
 import { CurrencyType, PaymentStatus, ShiftStatus } from '../../../../core/enums';
 import { ClinicSchema } from '../shared';
-import { HandleDates } from '../../../../shared/utils/handle-dates';
+import { HandleDates } from '../../../../shared/adapters/handle-dates';
 
 const PaymentSchema = new mongoose.Schema<Payment>(
   {
