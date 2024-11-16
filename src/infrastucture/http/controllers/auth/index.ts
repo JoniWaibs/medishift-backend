@@ -8,11 +8,14 @@ import { AuthService } from '../../../services/auth-service';
 import { cookieOptions } from '../../../../config/cookie';
 import { Password } from '../../../../shared/adapters/password-hasher';
 
+import { EmailService } from '../../../services/email-service';
+import { AuthEmail } from '../../../../application/use-cases/email/auth';
+
 export class AuthController {
-  constructor(private readonly repository: UserRepository) {}
+  constructor(private readonly repository: UserRepository, private readonly emailService: EmailService) {}
 
   async signUp(req: Request, res: Response, next: NextFunction) {
-    const { name, lastName, password, licenseNumber, contactInfo } = req.body;
+    const { name, lastName, password, licenseNumber, contactInfo, isTestUser } = req.body;
 
     const user = await new FindUser(this.repository).executeByDoctor<Doctor>({ email: contactInfo.email });
 
@@ -27,7 +30,8 @@ export class AuthController {
         role: UserRole.DOCTOR,
         contactInfo,
         licenseNumber,
-        password
+        password,
+        isTestUser: isTestUser ?? false
       });
 
       const token = AuthService.generateToken({
@@ -35,6 +39,8 @@ export class AuthController {
         email: userCreated.email!,
         role: userCreated.role
       });
+
+      await new AuthEmail(this.repository, this.emailService).sendConfirmationEmail(userCreated.id, userCreated.email!);
 
       res.cookie('session', token, cookieOptions).status(HttpCode.OK).json({
         id: userCreated.id,
@@ -63,6 +69,12 @@ export class AuthController {
     const token = AuthService.generateToken({ id: user.id!, email: user.contactInfo.email!, role: user.role });
 
     res.cookie('session', token, cookieOptions).status(HttpCode.OK).json(user);
+  }
+
+  async confirmEmail(req: Request, res: Response) {
+    const { token } = req.query;
+    await new AuthEmail(this.repository, this.emailService).confirmEmail(token as string);
+    res.status(200).send({ message: 'Email confirmed successfully!' });
   }
 
   currentUser(req: Request, res: Response) {

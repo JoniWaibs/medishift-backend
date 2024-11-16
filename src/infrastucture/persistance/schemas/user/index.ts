@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
- 
 import mongoose from 'mongoose';
 import { Password } from '../../../../shared/adapters/password-hasher';
 import { BaseUser, Patient, Doctor } from '../../../../core/models';

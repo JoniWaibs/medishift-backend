@@ -22,7 +22,7 @@ export class DoctorController {
       const result = await this.repository.update({ id: doctorId, userData, type: 'doctor' });
       
       if (!result) {
-        return res.status(HttpCode.NOT_FOUND).json({ message: 'User not found' });
+        return res.status(HttpCode.NOT_FOUND).json({ message: 'Cant update user' });
       }
 
       res.status(HttpCode.OK).json({

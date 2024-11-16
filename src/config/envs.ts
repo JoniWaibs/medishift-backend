@@ -13,5 +13,16 @@ export const envs = {
   MONGO_DB_USER: env.get('MONGO_DB_USER').required().asString(),
   MONGO_DB_PASS: env.get('MONGO_DB_PASS').required().asString(),
 
-  TIMEZONE: env.get('TIMEZONE').required().asString()
+  TIMEZONE: env.get('TIMEZONE').required().asString(),
+
+  //Email
+  MAILER_API_KEY: env.get('MAILER_API_KEY').required().asString(),
+  MAILER_SERVICE: env.get('MAILER_SERVICE').required().asString(),
+  MAILER_EMAIL: env.get('MAILER_EMAIL').required().asString(),
+  MAILER_PORT: env.get('MAILER_PORT').required().asPortNumber(),
+  MAILER_SECURE: env.get('MAILER_SECURE').required().asBool(),
+  MAILER_HOST: env.get('MAILER_HOST').required().asString(),
+  MAILER_FROM: env.get('MAILER_FROM').required().asString(),
+
+  FRONTEND_URL: env.get('FRONTEND_URL').required().asString(),
 };
