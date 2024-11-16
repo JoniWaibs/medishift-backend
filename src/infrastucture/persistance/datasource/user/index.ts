@@ -1,3 +1,4 @@
+import { UpdateQuery } from 'mongoose';
 import { UserDatasource } from '../../../../application/datasources';
 import { UserEntity } from '../../../../core/entities/user';
 import { Patient, Doctor, UserBasicInfo } from '../../../../core/models';
@@ -23,7 +24,7 @@ export class MongoDBUserDatasource implements UserDatasource {
       } else {
         user = await DoctorModel.findOne({ 'contactInfo.email': email });
       }
-      return user as T;
+      return user as unknown as T;
     } catch (error: unknown) {
       throw AppError.internalServer(`User was not founded in MongoDDBB - ${error}`);
     }
@@ -38,6 +39,16 @@ export class MongoDBUserDatasource implements UserDatasource {
       throw AppError.internalServer(`Patient was not created in MongoDDBB - ${error}`);
     }
   }
+
+  async deletePatient(id: string): Promise<boolean> {
+    try {
+      const deletedUser = await PatientModel.findByIdAndDelete(id);
+      return !!deletedUser;
+    } catch (error: unknown) {
+      throw AppError.internalServer(`User cannot deleted from MongoDDBB - ${error}`);
+    }
+  }
+
 
   async search<T extends Patient>({ search, id }: { search?: string; id?: string }): Promise<T[] | []> {
     const query = {
@@ -60,24 +71,38 @@ export class MongoDBUserDatasource implements UserDatasource {
     }
   }
 
-  async deletePatient(id: string): Promise<boolean> {
+  async updateMany({ attributes, type }: { attributes: Record<string, unknown>, type: 'doctor' | 'patient' }): Promise<boolean> {
+    const Model = {
+      ['doctor']: DoctorModel,
+      ['patient']: PatientModel
+    }
+
     try {
-      const deletedUser = await PatientModel.findByIdAndDelete(id);
-      return !!deletedUser;
+      const result = await Model[type].updateMany({}, { $set: { ...attributes } }, { upsert: false });
+      return result.modifiedCount > 0;
     } catch (error: unknown) {
-      throw AppError.internalServer(`User cannot deleted from MongoDDBB - ${error}`);
+      throw AppError.internalServer(`Users was not updated in MongoDDBB - ${error}`);
     }
   }
 
-  async updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null> {
+  async update<T>({ id, userData, type }: { id: string; userData: T, type: 'doctor' | 'patient' }): Promise<UserBasicInfo | null> {
     try {
-      const patientUpdated = await PatientModel.findByIdAndUpdate(id, userData, { returnDocument: 'after' });
-
-      if (!patientUpdated) {
+      let updatedUser = null;
+      switch (type) {
+        case 'doctor':
+          updatedUser = await DoctorModel.findByIdAndUpdate(id, userData as unknown as UpdateQuery<Doctor>, { returnDocument: 'after' });
+          break;
+        case 'patient':
+          updatedUser = await PatientModel.findByIdAndUpdate(id, userData as unknown as UpdateQuery<Patient>, { returnDocument: 'after' });
+          break;
+        default:
+          throw AppError.notFound('User type not found');
+      }
+      if (!updatedUser) {
         return null;
       }
 
-      return { id: patientUpdated.id, role: patientUpdated.role };
+      return { id: updatedUser.id, role: updatedUser.role };
     } catch (error: unknown) {
       throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);
     }

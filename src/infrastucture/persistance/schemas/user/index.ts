@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+ 
 import mongoose from 'mongoose';
 import { Password } from '../../../../shared/adapters/password-hasher';
 import { BaseUser, Patient, Doctor } from '../../../../core/models';
@@ -35,6 +35,10 @@ export const BaseUserSchema = new mongoose.Schema<Omit<BaseUser, 'id'>>(
     updatedAt: { type: String },
     dateOfBirth: {
       type: String
+    },
+    isTestUser: {
+      type: Boolean,
+      default: false
     }
   },
   {
