@@ -14,5 +14,5 @@
 -  repetitive schedules by days, weeks, months
 -  add logger service
 -  Add query validations
--  Merge logic with patients and doctors using user entity, and implements search logic
+-  Merge logic with patients and doctors using user entity, and implements search logic, update and delete
 -  serialize errors
