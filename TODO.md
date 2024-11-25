@@ -18,3 +18,7 @@
 -  serialize errors :soon:
 -  Reset password email + logic :white_check_mark:
 -  Confirm email logic :white_check_mark:
+-  Merge tokens services :soon:
+-  Improve logic in Email use-case :soon:
+  - Remove confirmEmail and resetPassword from there
+-  Add swagger documentation :soon:
