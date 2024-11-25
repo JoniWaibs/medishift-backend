@@ -50,4 +50,12 @@ export class Validator {
       body('emergencyContact.contactInfo.address.country').optional().toLowerCase().isString().trim()
     ];
   }
+
+  static get forgotPassword(): ValidationChain[] {
+    return [body('email').isEmail().toLowerCase().withMessage('Email must be valid').trim()];
+  }
+
+  static get resetPassword(): ValidationChain[] {
+    return [body('newPassword').trim().isLength({ min: 6 }).withMessage('Password must be at least 6 characters')];
+  }
 }

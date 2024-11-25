@@ -1,4 +1,3 @@
-import { UpdateQuery } from 'mongoose';
 import { UserDatasource } from '../../../../application/datasources';
 import { UserEntity } from '../../../../core/entities/user';
 import { Patient, Doctor, UserBasicInfo } from '../../../../core/models';
@@ -49,7 +48,6 @@ export class MongoDBUserDatasource implements UserDatasource {
     }
   }
 
-
   async search<T extends Patient>({ search, id }: { search?: string; id?: string }): Promise<T[] | []> {
     const query = {
       ...(id && { _id: id }),
@@ -86,14 +84,15 @@ export class MongoDBUserDatasource implements UserDatasource {
   }
 
   async update<T>({ id, userData, type }: { id: string; userData: T, type: 'doctor' | 'patient' }): Promise<UserBasicInfo | null> {
+
     try {
       let updatedUser = null;
       switch (type) {
         case 'doctor':
-          updatedUser = await DoctorModel.findByIdAndUpdate(id, userData as unknown as UpdateQuery<Doctor>, { returnDocument: 'after' });
+          updatedUser = await DoctorModel.findByIdAndUpdate(id, userData as unknown as Partial<Doctor>, { returnDocument: 'after' });
           break;
         case 'patient':
-          updatedUser = await PatientModel.findByIdAndUpdate(id, userData as unknown as UpdateQuery<Patient>, { returnDocument: 'after' });
+          updatedUser = await PatientModel.findByIdAndUpdate(id, userData as unknown as Partial<Patient>, { returnDocument: 'after' });
           break;
         default:
           throw AppError.notFound('User type not found');
@@ -101,7 +100,7 @@ export class MongoDBUserDatasource implements UserDatasource {
       if (!updatedUser) {
         return null;
       }
-
+      await updatedUser.save();
       return { id: updatedUser.id, role: updatedUser.role };
     } catch (error: unknown) {
       throw AppError.internalServer(`User cant updated in MongoDDBB - ${error}`);

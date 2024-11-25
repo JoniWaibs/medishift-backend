@@ -148,15 +148,12 @@ const DoctorSchema = new mongoose.Schema<Omit<Doctor, 'id'>>({
  * Then it will hash the password previously added
  * and will subscribe this password
  */
-DoctorSchema.pre('save', async function (done) {
+DoctorSchema.pre('save', async function () {
   this.updatedAt = HandleDates.dateNow();
-
   if (this.isModified('password')) {
     const hashed = await Password.toHash(this.get('password'));
     this.set('password', hashed);
   }
-
-  done();
 });
 
 PatientSchema.add(BaseUserSchema);

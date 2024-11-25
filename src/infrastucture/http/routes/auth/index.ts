@@ -22,7 +22,9 @@ export class AuthRouter {
       { path: `${basePath}/current-user`, method: router.get, middlewares: [CurrentUserMiddleware.handleUser], handler: controller.currentUser },
       { path: `${basePath}/sign-in`, method: router.post, middlewares: [validate(Validator.signIn)], handler: controller.signIn },
       { path: `${basePath}/sign-out`, method: router.post, handler: controller.signOut },
-      { path: `${basePath}/confirm-email`, method: router.get, handler: controller.confirmEmail }
+      { path: `${basePath}/email-confirmation`, method: router.post, handler: controller.confirmEmail },
+      { path: `${basePath}/forgot-password`, method: router.post, middlewares: [validate(Validator.forgotPassword)], handler: controller.forgotPassword },
+      { path: `${basePath}/reset-password`, method: router.post, middlewares: [validate(Validator.resetPassword)], handler: controller.resetPassword }
     ];
 
     routeDefinitions.forEach(({ path, method, middlewares = [], handler }) => {
