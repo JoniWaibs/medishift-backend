@@ -20,6 +20,7 @@ export interface BaseUser {
   createdAt?: string;
   updatedAt?: string;
   dateOfBirth?: string;
+  isTestUser?: boolean;
 }
 
 export interface UserBasicInfo {
@@ -29,6 +30,7 @@ export interface UserBasicInfo {
 }
 
 export interface Doctor extends BaseUser {
+  isEmailConfirmed?: boolean;
   password: string;
   specialization?: string[];
   licenseNumber?: string;

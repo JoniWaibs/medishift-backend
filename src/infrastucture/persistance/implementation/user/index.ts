@@ -17,11 +17,16 @@ export class UserRepositoryImplementation implements UserRepository {
   deletePatient(id: string): Promise<boolean> {
     return this.datasource.deletePatient(id);
   }
-  updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null> {
-    return this.datasource.updatePatient({ id, userData });
-  }
 
   search<T extends Patient>({ search, id }: { search?: string; id?: string }): Promise<T[] | []> {
     return this.datasource.search({ search, id });
+  }
+
+  updateMany({ attributes, type }: { attributes: Record<string, unknown>, type: 'doctor' | 'patient' }): Promise<boolean> {
+    return this.datasource.updateMany({ attributes, type });
+  }
+
+  update<T>({ id, userData, type }: { id: string; userData: T, type: 'doctor' | 'patient' }): Promise<UserBasicInfo | null> {
+    return this.datasource.update({ id, userData, type });
   }
 }

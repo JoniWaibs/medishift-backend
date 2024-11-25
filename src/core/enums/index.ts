@@ -1,5 +1,6 @@
 export enum HttpCode {
   OK = 200,
+  CREATED = 201,
   CONFLICT = 409,
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
@@ -31,7 +32,8 @@ export enum PaymentMethod {
   CASH = 'cash',
   TRANSFER = 'transfer',
   CREDIT_CARD = 'credit_card',
-  DEBIT_CARD = 'debit_card'
+  DEBIT_CARD = 'debit_card',
+  UNKNOWN = 'unknown'
 }
 
 export enum CurrencyType {

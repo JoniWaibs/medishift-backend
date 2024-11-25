@@ -17,7 +17,7 @@ export class ShiftRouter {
     router.use(CurrentUserMiddleware.handleUser, RequestAuthMiddleware.handleBasic);
 
     const routeDefinitions = [
-      { path: `${basePath}/create`, method: router.get, handler: controller.create },
+      { path: `${basePath}/create`, method: router.post, handler: controller.create },
       { path: `${basePath}`, method: router.get, handler: controller.search },
       { path: `${basePath}/update/:id`, method: router.put, handler: controller.update }
     ];

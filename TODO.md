@@ -1,18 +1,25 @@
 ### TODOS
--  Hash password :done
--  Add Express validators :done
--  MongoDDBB  :done
--  JWT :done
--  compare hash :done
--  auth endpoints :done
--  Add validation to create patient :done
--  Add findAndUpdate patients :done
--  configure vscode debugger
--  add github actions + precommit
--  Add validation to prevent inconsistency with dates
--  Notification system
--  repetitive schedules by days, weeks, months
--  add logger service
--  Add query validations
--  Merge logic with patients and doctors using user entity, and implements search logic
--  serialize errors
+-  Hash password :white_check_mark:
+-  Add Express validators :white_check_mark:
+-  MongoDDBB  :white_check_mark:
+-  JWT :white_check_mark:
+-  compare hash :white_check_mark:
+-  auth endpoints :white_check_mark:
+-  Add validation to create patient :white_check_mark:
+-  Add findAndUpdate patients :white_check_mark:
+-  configure vscode debugger :soon:
+-  add github actions + precommit :soon:
+-  Add validation to prevent inconsistency with dates :soon:
+-  Notification system :soon:
+-  repetitive schedules by days, weeks, months :soon:
+-  add logger service :soon:
+-  Add query validations :soon:
+-  Merge logic with patients and doctors using user entity, and implements search logic, update and delete :soon:
+-  serialize errors :soon:
+-  Reset password email + logic :white_check_mark:
+-  Confirm email logic :white_check_mark:
+-  Merge tokens services :soon:
+-  Improve logic in Email use-case :soon:
+  - Remove confirmEmail and resetPassword from there
+-  Add swagger documentation :soon:
+-  Add Welcome email :soon:

@@ -7,5 +7,6 @@ export abstract class UserDatasource {
   abstract createPatient<T extends Patient>(userData: UserEntity<T>): Promise<UserBasicInfo>;
   abstract search<T extends Patient>({ search, id }: { search?: string; id?: string }): Promise<T[] | []>;
   abstract deletePatient(id: string): Promise<boolean>;
-  abstract updatePatient<T extends Patient>({ id, userData }: { id: string; userData: T }): Promise<UserBasicInfo | null>;
+  abstract updateMany({ attributes, type }: { attributes: Record<string, unknown>, type: 'doctor' | 'patient' }): Promise<boolean>;
+  abstract update<T>({ id, userData, type }: { id: string; userData: T, type: 'doctor' | 'patient' }): Promise<UserBasicInfo | null>;
 }

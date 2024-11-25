@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333333;
+        margin: 0;
+        padding: 0;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .header {
+        background-color: #B28479;
+        color: #ffffff;
+        text-align: center;
+        padding: 20px;
+        font-size: 24px;
+      }
+      .header span {
+        font-size: 28px;
+      }
+      .content {
+        padding: 20px;
+        text-align: center;
+      }
+      .content p {
+        font-size: 16px;
+        margin: 10px 0;
+      }
+      .button-container {
+        margin-top: 20px;
+        text-align: center;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #B28479;
+        color: #ffffff !important;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+      .button:hover {
+        background-color: #D3AA94;
+      }
+      .footer {
+        margin-top: 20px;
+        background-color: #f4f4f9;
+        color: #777777;
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+      }
+      .footer a {
+        color: #0078d4;
+        text-decoration: none;
+      }
+
+      /* Mobile Styles */
+      @media (max-width: 600px) {
+        .header {
+          font-size: 20px;
+          padding: 15px;
+        }
+        .content p {
+          font-size: 14px;
+        }
+        .button {
+          font-size: 14px;
+          padding: 10px 20px;
+        }
+        .footer {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        Que lindo que es tenerte en acá! <span>🩺</span>
+      </div>
+      <div class="content">
+        <p>
+          Hola! <span>👋</span><br />
+          Gracias por registrarte en <strong>Medishift</strong>. Por favor, confirmá tu email para activar tu cuenta y empezar a gestionar tus turnos médicos de manera sencilla.
+        </p>
+        <div class="button-container">
+          <a
+            href="{{confirmation_link}}"
+            class="button"
+            target="_blank"
+          >
+            Confirmar email ✅
+          </a>
+        </div>
+        <p>
+          Si no registraste en <strong>Medishift</strong>, no te preocupes! Puedes ignorar este email. <span>❌</span>
+        </p>
+      </div>
+      <div class="footer">
+        <p>
+          &copy; 2024 Medishift. All rights reserved. <span>🌟</span>
+        </p>
+        <p>
+          Necesitás ayuda? <a href="mailto:support@medishift.com">Contactanos</a> <span>📧</span>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

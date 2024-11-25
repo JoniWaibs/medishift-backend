@@ -4,7 +4,6 @@ import { Patient } from '../../../../core/models';
 import { AppError } from '../../../../shared/errors/custom.error';
 import { CreateUser } from '../../../../application/use-cases';
 import { HttpCode, UserRole } from '../../../../core/enums';
-import { UpdateUser } from '../../../../application/use-cases/user/update-user';
 import mongoose from 'mongoose';
 
 export class PatientController {
@@ -79,7 +78,7 @@ export class PatientController {
     const userData = req.body;
 
     try {
-      const patientUpdated = await new UpdateUser(this.repository).executeByPatient({ id: patientId, userData });
+      const patientUpdated = await this.repository.update({ id: patientId, userData, type: 'patient' });
 
       if (!patientUpdated) {
         throw AppError.conflict('Patient cant be update');

@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import mongoose from 'mongoose';
-import { Password } from '../../../../shared/utils/password-hasher';
+import { Password } from '../../../../shared/adapters/password-hasher';
 import { BaseUser, Patient, Doctor } from '../../../../core/models';
 import { ContactInfoSchema } from '../shared';
-import { HandleDates } from '../../../../shared/utils/handle-dates';
+import { HandleDates } from '../../../../shared/adapters/handle-dates';
 
 export const BaseUserSchema = new mongoose.Schema<Omit<BaseUser, 'id'>>(
   {
@@ -35,6 +34,10 @@ export const BaseUserSchema = new mongoose.Schema<Omit<BaseUser, 'id'>>(
     updatedAt: { type: String },
     dateOfBirth: {
       type: String
+    },
+    isTestUser: {
+      type: Boolean,
+      default: false
     }
   },
   {
@@ -115,6 +118,10 @@ export const PatientSchema = new mongoose.Schema<Omit<Patient, 'id'>>({
 });
 
 const DoctorSchema = new mongoose.Schema<Omit<Doctor, 'id'>>({
+  isEmailConfirmed: {
+    type: Boolean,
+    default: false
+  },
   contactInfo: {
     type: ContactInfoSchema,
     required: true
@@ -126,11 +133,13 @@ const DoctorSchema = new mongoose.Schema<Omit<Doctor, 'id'>>({
   },
   specialization: {
     type: String,
-    trim: true
+    trim: true,
+    default: 'unknown'
   },
   licenseNumber: {
     type: String,
-    trim: true
+    trim: true,
+    default: 'unknown'
   }
 });
 
@@ -139,15 +148,12 @@ const DoctorSchema = new mongoose.Schema<Omit<Doctor, 'id'>>({
  * Then it will hash the password previously added
  * and will subscribe this password
  */
-DoctorSchema.pre('save', async function (done) {
+DoctorSchema.pre('save', async function () {
   this.updatedAt = HandleDates.dateNow();
-
   if (this.isModified('password')) {
     const hashed = await Password.toHash(this.get('password'));
     this.set('password', hashed);
   }
-
-  done();
 });
 
 PatientSchema.add(BaseUserSchema);

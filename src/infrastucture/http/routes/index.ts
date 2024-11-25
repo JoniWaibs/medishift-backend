@@ -15,7 +15,6 @@ export class AppRoutes {
       // ClinicRouter.routes, // Add this line once ClinicRouter is implemented
     ];
 
-    // Register each route module
     routeModules.forEach((route) => router.use(route));
 
     return router;

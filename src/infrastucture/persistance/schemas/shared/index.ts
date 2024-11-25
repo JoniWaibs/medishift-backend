@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import mongoose from 'mongoose';
 import { Clinic, ContactInfo } from '../../../../core/models';
 
