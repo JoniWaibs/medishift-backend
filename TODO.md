@@ -22,3 +22,4 @@
 -  Improve logic in Email use-case :soon:
   - Remove confirmEmail and resetPassword from there
 -  Add swagger documentation :soon:
+-  Add Welcome email :soon:
